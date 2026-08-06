@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RiskNotice from '../components/RiskNotice.astro';
+---
+<BaseLayout title="Documentation" description="Pre-release product documentation and operating principles for the DepthLume Windows desktop market intelligence platform." path="/documentation/">
+  <article class="container prose-page">
+    <header><span class="eyebrow">Documentation</span><h1>DepthLume product guide</h1><p class="lede">An initial overview of the platform’s purpose, workflow and boundaries. Detailed operating documentation will grow alongside closed beta builds.</p></header>
+    <div class="provisional">Pre-release documentation — interface details, supported sources and system requirements remain subject to confirmation.</div>
+    <section><h2>What DepthLume is</h2><p>DepthLume is a professional Windows desktop workspace for researching cryptocurrency futures market behavior. It organizes public real-time market data, order flow, market context and scenario evaluation without connecting to a trading account.</p></section>
+    <section><h2>Core workflow</h2><ol><li>Select a supported market.</li><li>Inspect public market data and order-flow behavior.</li><li>Review evidence, conflicts, risks, invalidation and data quality.</li><li>Observe scenarios over time and evaluate outcomes.</li><li>Make your own independent decision.</li></ol></section>
+    <section><h2>Interpretation principles</h2><h3>Context is not instruction</h3><p>LONG, SHORT, SETUP and WAIT labels describe an analytical state. They do not direct a trade and do not represent a probability of profit.</p><h3>Conflicts remain visible</h3><p>DepthLume is designed to preserve contradictory evidence instead of hiding it behind one score.</p><h3>Data quality matters</h3><p>Every interpretation depends on the availability and health of its source data. Missing or degraded data can make a conclusion unsuitable for use.</p></section>
+    <section><h2>Data and privacy model</h2><p>The product is intended to process public market data in a local Windows workspace. It does not require a trading-account connection and does not manage user funds.</p></section>
+    <section><h2>Documentation status</h2><p>Installation steps, confirmed markets, exchange coverage, update delivery and final system requirements will be published once they are validated for a distributable build.</p></section>
+    <RiskNotice />
+  </article>
+</BaseLayout>

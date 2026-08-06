@@ -1,0 +1,34 @@
+---
+import { site } from '../config/site';
+import BrandMark from './BrandMark.astro';
+import { localizedPath, type Locale } from '../i18n/locales';
+import { getTranslation } from '../i18n/translations';
+interface Props { locale?: Locale; }
+const { locale = 'en' } = Astro.props;
+const t = getTranslation(locale);
+const footerGroups = [
+  { title:t.nav[0], links:[{label:t.nav[0],href:`${localizedPath(locale,'')}#features`},{label:t.nav[2],href:`${localizedPath(locale,'')}#scenario-lab`},{label:t.nav[6],href:localizedPath(locale,'closed-beta')}] },
+  { title:t.nav[5], links:[{label:t.nav[5],href:localizedPath(locale,'documentation')},{label:t.nav[3],href:`${localizedPath(locale,'')}#screenshots`}] },
+  { title:'Legal', links:[{label:t.meta.privacy.title,href:localizedPath(locale,'privacy')},{label:t.meta.terms.title,href:localizedPath(locale,'terms')},{label:t.meta['risk-disclaimer'].title,href:localizedPath(locale,'risk-disclaimer')}] },
+];
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href={localizedPath(locale,'')} aria-label="DepthLume home"><BrandMark /><span>DepthLume</span></a>
+        <p>{t.home.hero[2]}</p>
+      </div>
+      {footerGroups.map((group) => (
+        <nav class="footer-group" aria-label={group.title}>
+          <h2>{group.title}</h2>
+          <ul>{group.links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}</ul>
+        </nav>
+      ))}
+    </div>
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} DepthLume. All rights reserved.</span>
+      <span class="mono">{site.version}</span>
+    </div>
+  </div>
+</footer>

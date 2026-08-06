@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { localeConfig, type Locale } from '../i18n/locales';
+interface Props { title: string; description: string; path?: string; noindex?: boolean; locale?: Locale; }
+const { title, description, path = '/', noindex = false, locale = 'en' } = Astro.props;
+---
+<!doctype html>
+<html lang={localeConfig[locale].htmlLang} dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#071119" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <SEO {title} {description} {path} {noindex} {locale} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader {locale} pathname={path} />
+    <main id="main-content"><slot /></main>
+    <SiteFooter {locale} />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link { position: fixed; z-index: 100; top: .7rem; left: .7rem; padding: .7rem 1rem; border-radius: .4rem; background: var(--color-cyan); color: #041116; transform: translateY(-160%); }
+  .skip-link:focus { transform: translateY(0); }
+</style>

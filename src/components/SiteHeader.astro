@@ -1,0 +1,68 @@
+---
+import Button from './Button.astro';
+import BrandMark from './BrandMark.astro';
+import LanguageSelector from './LanguageSelector.astro';
+import { localizedPath, type Locale } from '../i18n/locales';
+import { getTranslation } from '../i18n/translations';
+interface Props { locale?: Locale; pathname?: string; }
+const { locale = 'en', pathname = '/' } = Astro.props;
+const t = getTranslation(locale);
+const home = localizedPath(locale, '');
+const navigation = [
+  { label:t.nav[0], href:`${home}#features` }, { label:t.nav[1], href:`${home}#how-it-works` },
+  { label:t.nav[2], href:`${home}#scenario-lab` }, { label:t.nav[3], href:`${home}#screenshots` },
+  { label:t.nav[4], href:`${home}#faq` }, { label:t.nav[5], href:localizedPath(locale,'documentation') },
+];
+---
+<header class="site-header" data-site-header>
+  <div class="container header-inner">
+    <a class="brand" href={home} aria-label="DepthLume home">
+      <BrandMark />
+      <span>DepthLume</span>
+    </a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <LanguageSelector {locale} {pathname} />
+      <Button href={localizedPath(locale,'closed-beta')} variant="secondary">{t.nav[6]}</Button>
+    </nav>
+    <button class="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation" data-menu-toggle>
+      <span></span><span></span>
+    </button>
+  </div>
+  <nav id="mobile-navigation" class="mobile-nav" aria-label="Mobile navigation" hidden data-mobile-nav>
+    {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+    <a href={localizedPath(locale,'closed-beta')}>{t.nav[6]}</a>
+    <LanguageSelector {locale} {pathname} mobile />
+  </nav>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  const closeMenu = () => {
+    if (!toggle || !nav) return;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open navigation');
+    nav.hidden = true;
+  };
+  toggle?.addEventListener('click', () => {
+    if (!nav) return;
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    toggle.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+    nav.hidden = open;
+    if (!open) nav.querySelector<HTMLElement>('a')?.focus();
+  });
+  nav?.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('a')) closeMenu(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeMenu(); toggle?.focus(); } });
+  document.querySelectorAll<HTMLDetailsElement>('[data-language-menu]').forEach((menu) => {
+    const trigger = menu.querySelector<HTMLElement>('summary');
+    menu.addEventListener('toggle', () => { if (menu.open) menu.querySelector<HTMLElement>('a')?.focus(); });
+    menu.addEventListener('keydown', (event) => { if (event.key === 'Escape') { menu.open = false; trigger?.focus(); } });
+  });
+  window.addEventListener('resize', () => { if (window.innerWidth > 960) closeMenu(); }, { passive: true });
+  const setHeaderState = () => header?.setAttribute('data-scrolled', String(window.scrollY > 12));
+  setHeaderState();
+  window.addEventListener('scroll', setHeaderState, { passive: true });
+</script>

@@ -1,0 +1,15 @@
+---
+import LocalizedPage from '../../components/LocalizedPage.astro';
+import { localeConfig, localizedLocales, publicPages, type Locale, type PublicPage } from '../../i18n/locales';
+
+export function getStaticPaths() {
+  return localizedLocales.flatMap((locale) => publicPages.map((page) => ({
+    params: { lang: localeConfig[locale].prefix, page: page || undefined },
+    props: { locale, page },
+  })));
+}
+
+interface Props { locale: Locale; page: PublicPage; }
+const { locale, page } = Astro.props;
+---
+<LocalizedPage {locale} {page} />

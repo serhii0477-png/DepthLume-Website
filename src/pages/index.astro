@@ -1,0 +1,252 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import ProductWorkspace from '../components/ProductWorkspace.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import ProductShowcase from '../components/ProductShowcase.astro';
+import FAQ from '../components/FAQ.astro';
+import RiskNotice from '../components/RiskNotice.astro';
+import { faqs, features, marketInputs, workflow } from '../data/content';
+import { site } from '../config/site';
+import { getTranslation } from '../i18n/translations';
+const english = getTranslation('en');
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'DepthLume',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Windows',
+  description: site.description,
+  url: site.url,
+  offers: { '@type': 'Offer', availability: 'https://schema.org/PreOrder' },
+};
+---
+<BaseLayout title="DepthLume" description="See deeper into market behavior with explainable order flow, market context and scenario research in one professional Windows workspace." path="/">
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(schema)}></script>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Windows Desktop Market Intelligence</span>
+        <h1>See deeper into <span>market behavior.</span></h1>
+        <p>DepthLume brings real-time order flow, market context and explainable scenario analysis into one professional Windows workspace.</p>
+        <div class="hero-actions"><Button href="#market-understanding" variant="primary">Explore the Platform</Button><Button href="/closed-beta/">Join Closed Beta</Button></div>
+        <div class="trust-line"><span aria-hidden="true">✓</span>No trading-account connection required</div>
+      </div>
+      <ProductWorkspace caption={english.home.realCaption} alt={english.home.realAlt} />
+    </div>
+    <div class="hero-meta container" aria-label="Product principles">
+      <span><b>01</b> Public market data</span><span><b>02</b> Explainable context</span><span><b>03</b> Local research workspace</span>
+    </div>
+  </section>
+
+  <section id="market-understanding" class="section section--line understanding surface-grid">
+    <div class="container">
+      <SectionHeading eyebrow="Market Understanding" title="Many signals. One explainable context." description="DepthLume organizes distinct market inputs without hiding contradictions. You see what supports a context, what weakens it and whether the underlying data is fit for review." />
+      <div class="understanding-grid">
+        <div class="input-list">
+          {marketInputs.map((input, index) => <article><span class="mono">0{index + 1}</span><div><h3>{input.label}</h3><p>{input.detail}</p></div><i></i></article>)}
+        </div>
+        <div class="context-orbit panel">
+          <span class="orbit-label top">EVIDENCE</span><span class="orbit-label right">CONFLICTS</span><span class="orbit-label bottom">RISKS</span><span class="orbit-label left">QUALITY</span>
+          <div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div>
+          <div class="context-core"><span>DEPTHLUME</span><strong>MARKET<br/>CONTEXT</strong><small>EXPLAINABLE / REVIEWABLE</small></div>
+          <p>Inputs are combined into context—not compressed into a black-box promise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section decision section--line">
+    <div class="container decision-grid">
+      <div>
+        <SectionHeading eyebrow="Decision Engine" title="A conclusion you can interrogate." description="DepthLume separates directional context from action state, then exposes the reasoning that produced it." />
+        <div class="decision-note"><span class="mono">IMPORTANT</span><p>Context strength describes alignment of observed evidence. It is not a probability of profit.</p></div>
+      </div>
+      <div class="decision-console panel">
+        <div class="panel-head"><span class="panel-kicker">DECISION SNAPSHOT / CONCEPT</span><span class="mono muted-small">EXPLAINABLE OUTPUT</span></div>
+        <div class="decision-top"><div><small>DIRECTIONAL CONTEXT</small><strong><span class="long">LONG</span> / <span class="short">SHORT</span></strong></div><div><small>ACTION STATE</small><strong>SETUP / <span class="wait">WAIT</span></strong></div></div>
+        <div class="decision-items">
+          <div><span class="item-icon positive">+</span><p><b>Evidence</b>Observable factors supporting the current context.</p></div>
+          <div><span class="item-icon neutral">±</span><p><b>Conflicts</b>Signals that disagree or reduce confidence in interpretation.</p></div>
+          <div><span class="item-icon warning">!</span><p><b>Risks</b>Conditions that make the context fragile or unsuitable.</p></div>
+          <div><span class="item-icon line-icon">⌁</span><p><b>Invalidation</b>What would make the working interpretation no longer valid.</p></div>
+          <div><span class="item-icon quality-icon">◇</span><p><b>Data quality</b>Coverage and health of the information behind the view.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scenario-lab" class="section scenario section--line">
+    <div class="container">
+      <SectionHeading eyebrow="Scenario Outcome Lab" title="Turn observations into accountable research." description="Create a scenario, observe its full lifecycle and evaluate what actually happened—without rewriting the thesis after the fact." />
+      <div class="scenario-track">
+        <article><span class="mono">01 / CREATE</span><h3>Define the scenario</h3><p>Record context, evidence, conflicts, risks and invalidation before outcome review.</p></article>
+        <article><span class="mono">02 / OBSERVE</span><h3>Follow the lifecycle</h3><p>Watch how the scenario evolves as the market regime and available evidence change.</p></article>
+        <article><span class="mono">03 / EVALUATE</span><h3>Review the outcome</h3><p>Examine false positives, compare regimes and build future calibration from real observations.</p></article>
+      </div>
+      <div class="scenario-ribbon"><span>CREATED</span><i></i><span>ACTIVE</span><i></i><span>INVALIDATED</span><i></i><span>EVALUATED</span></div>
+    </div>
+  </section>
+
+  <section id="features" class="section section--line">
+    <div class="container">
+      <SectionHeading eyebrow="Platform Capabilities" title="A complete research surface." description="Focused tools for reading market behavior, reviewing context and preserving the evidence behind every conclusion." />
+      <div class="feature-grid">{features.map((feature) => <FeatureCard {...feature} />)}</div>
+    </div>
+  </section>
+
+  <section id="screenshots" class="section showcase section--line">
+    <div class="container">
+      <SectionHeading eyebrow="Product Interface" title="Built as one coherent Windows workspace." description="Real application captures will replace these reserved frames as interface assets are approved." />
+      <ProductShowcase caption={english.home.realCaption} alt={english.home.realAlt} />
+    </div>
+  </section>
+
+  <section id="how-it-works" class="section section--line workflow-section">
+    <div class="container">
+      <SectionHeading eyebrow="How DepthLume Works" title="From public data to your own decision." description="A deliberate five-step workflow keeps analysis separate from execution." />
+      <ol class="workflow-list">{workflow.map(([number, title, text]) => <li><span class="mono">{number}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="section windows section--line">
+    <div class="container windows-grid">
+      <div>
+        <span class="eyebrow">Native Workstation</span><h2>Designed for the Windows desktop.</h2><p>A focused local workspace for market-data processing and research. Distributed builds are intended to run without a separate Python installation.</p>
+        <Button href="/closed-beta/">Closed Beta</Button>
+      </div>
+      <div class="system-card panel">
+        <div class="windows-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <ul><li><span>Platform</span><strong>Windows desktop</strong></li><li><span>Data processing</span><strong>Local workspace</strong></li><li><span>Python</span><strong>No separate install intended</strong></li><li><span>Trading account</span><strong>Not required</strong></li><li><span>System requirements</span><strong class="pending">To be confirmed</strong></li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section beta-cta section--line surface-grid">
+    <div class="container cta-inner">
+      <span class="eyebrow">Closed Beta</span><h2>Help shape a more transparent market research workspace.</h2><p>DepthLume is being prepared for limited beta evaluation. Access timing, supported markets and system requirements are still being confirmed.</p>
+      <Button href="/closed-beta/" variant="primary">Join Closed Beta</Button>
+    </div>
+  </section>
+
+  <section id="faq" class="section section--line faq-section">
+    <div class="container faq-grid"><SectionHeading eyebrow="FAQ" title="Clear answers before access." description="Current product scope and limitations for this early website iteration." /><FAQ items={faqs} /></div>
+  </section>
+
+  <section class="section--compact section--line"><div class="container"><RiskNotice /></div></section>
+</BaseLayout>
+
+<style>
+  .hero { position: relative; padding: clamp(4rem, 8vw, 7.5rem) 0 2rem; }
+  .hero::before { position: absolute; top: -8rem; right: 10%; width: 25rem; height: 25rem; border: 1px solid rgba(96,221,235,.06); border-radius: 50%; content: ''; box-shadow: 0 0 0 5rem rgba(96,221,235,.018), 0 0 0 10rem rgba(96,221,235,.012); }
+  .hero-grid { display: grid; grid-template-columns: minmax(28rem,.82fr) minmax(39rem,1.18fr); align-items: center; gap: clamp(2.5rem, 4vw, 4rem); }
+  .hero-copy { position: relative; z-index: 3; }
+  .hero-copy h1 { max-width: 29rem; margin-top: 1.2rem; font-size: clamp(2.8rem,4vw,3.85rem); }
+  .hero-copy h1 span { color: var(--color-text-soft); }
+  .hero-copy > p { max-width: 36rem; margin-top: 1.4rem; font-size: var(--step-1); line-height: 1.55; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+  .trust-line { display: flex; align-items: center; gap: .55rem; margin-top: 1.2rem; color: var(--color-text-muted); font-size: .76rem; }
+  .trust-line span { color: var(--color-cyan); }
+  .hero-meta { display: flex; justify-content: flex-end; gap: clamp(1rem, 3vw, 3rem); margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--color-line); color: var(--color-text-muted); font: .58rem/1 var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
+  .hero-meta b { margin-right: .45rem; color: var(--color-cyan); font-weight: 500; }
+  .understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 8vw, 8rem); align-items: center; }
+  .input-list article { position: relative; display: grid; grid-template-columns: 2.4rem 1fr auto; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--color-line); }
+  .input-list article > span { color: var(--color-text-muted); font-size: .6rem; }
+  .input-list h3 { margin-bottom: .15rem; font-size: .92rem; letter-spacing: -.015em; }
+  .input-list p { font-size: .76rem; }
+  .input-list i { width: clamp(2rem, 6vw, 5rem); height: 1px; background: linear-gradient(90deg, var(--color-line), var(--color-cyan)); opacity: .5; }
+  .context-orbit { position: relative; display: grid; min-height: 31rem; place-items: center; overflow: hidden; }
+  .context-orbit::before { position: absolute; inset: 0; content: ''; background-image: radial-gradient(rgba(96,221,235,.18) 1px, transparent 1px); background-size: 18px 18px; mask-image: radial-gradient(circle, black, transparent 67%); opacity: .3; }
+  .orbit-ring { position: absolute; border: 1px solid rgba(96,221,235,.12); border-radius: 50%; }
+  .ring-a { width: 17rem; height: 17rem; } .ring-b { width: 25rem; height: 25rem; border-style: dashed; opacity: .6; animation: orbit 40s linear infinite; }
+  .context-core { position: relative; z-index: 2; display: grid; width: 12rem; height: 12rem; place-content: center; border: 1px solid rgba(96,221,235,.32); border-radius: 50%; background: radial-gradient(circle, rgba(96,221,235,.11), rgba(7,17,25,.93) 67%); text-align: center; box-shadow: 0 0 50px rgba(96,221,235,.08); }
+  .context-core span, .context-core small { color: var(--color-text-muted); font: .48rem/1.4 var(--font-mono); letter-spacing: .1em; }
+  .context-core strong { margin: .55rem 0; font: 560 .9rem/1.25 var(--font-mono); letter-spacing: .06em; }
+  .orbit-label { position: absolute; z-index: 2; padding: .4rem .55rem; border: 1px solid var(--color-line); border-radius: .25rem; background: var(--color-ocean-900); color: var(--color-text-muted); font: .5rem/1 var(--font-mono); letter-spacing: .08em; }
+  .orbit-label.top { top: 12%; left: 44%; } .orbit-label.right { top: 46%; right: 8%; } .orbit-label.bottom { bottom: 12%; left: 48%; } .orbit-label.left { top: 54%; left: 8%; }
+  .context-orbit > p { position: absolute; right: 1rem; bottom: 1rem; left: 1rem; text-align: center; font: .55rem/1.5 var(--font-mono); }
+  @keyframes orbit { to { transform: rotate(360deg); } }
+  .decision { background: rgba(8,18,26,.34); }
+  .decision-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
+  .decision-note { display: grid; grid-template-columns: auto 1fr; gap: .8rem; padding: .9rem; border-left: 2px solid var(--color-amber); background: rgba(226,179,95,.04); }
+  .decision-note span { color: var(--color-amber); font-size: .55rem; }
+  .decision-note p { font-size: .75rem; }
+  .decision-console { overflow: hidden; }
+  .muted-small { color: var(--color-text-muted); font-size: .52rem; }
+  .decision-top { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--color-line); }
+  .decision-top > div { padding: 1.5rem; }
+  .decision-top > div + div { border-left: 1px solid var(--color-line); }
+  .decision-top small { display: block; margin-bottom: .6rem; color: var(--color-text-muted); font: .52rem/1 var(--font-mono); }
+  .decision-top strong { font: 500 1rem/1 var(--font-mono); }
+  .long { color: var(--color-green); } .short { color: var(--color-red); } .wait { color: var(--color-amber); }
+  .decision-items { padding: .5rem 1.2rem 1rem; }
+  .decision-items > div { display: grid; grid-template-columns: 2rem 1fr; gap: .7rem; align-items: center; padding: .9rem 0; border-bottom: 1px solid var(--color-line); }
+  .decision-items > div:last-child { border: 0; }
+  .item-icon { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid var(--color-line); border-radius: .3rem; font: .68rem/1 var(--font-mono); }
+  .positive { color: var(--color-green); } .neutral, .quality-icon { color: var(--color-cyan); } .warning { color: var(--color-amber); } .line-icon { color: var(--color-red); }
+  .decision-items p { font-size: .73rem; }
+  .decision-items b { display: block; margin-bottom: .15rem; color: var(--color-text); font-size: .78rem; }
+  .scenario-track { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--color-line); }
+  .scenario-track article { min-height: 17rem; padding: 1.5rem; background: linear-gradient(145deg, rgba(13,26,36,.65), rgba(7,17,25,.35)); }
+  .scenario-track article + article { border-left: 1px solid var(--color-line); }
+  .scenario-track span { color: var(--color-cyan); font-size: .58rem; }
+  .scenario-track h3 { margin-top: 5rem; font-size: 1rem; }
+  .scenario-track p { margin-top: .7rem; font-size: .8rem; }
+  .scenario-ribbon { display: grid; grid-template-columns: auto 1fr auto 1fr auto 1fr auto; align-items: center; gap: .7rem; padding: 1rem; border: 1px solid var(--color-line); border-top: 0; color: var(--color-text-muted); font: .52rem/1 var(--font-mono); }
+  .scenario-ribbon i { height: 1px; background: linear-gradient(90deg, var(--color-cyan), var(--color-line)); }
+  .showcase { background: rgba(8,18,26,.34); }
+  .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .placeholder-policy { margin-top: 1rem; color: var(--color-text-muted); text-align: right; font-size: .52rem; letter-spacing: .08em; }
+  .workflow-list { list-style: none; border-top: 1px solid var(--color-line); }
+  .workflow-list li { display: grid; grid-template-columns: 4rem .55fr 1fr; align-items: center; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--color-line); }
+  .workflow-list li > span { color: var(--color-cyan); font-size: .65rem; }
+  .workflow-list li > div { display: contents; }
+  .workflow-list h3 { font-size: 1rem; }
+  .workflow-list p { max-width: 38rem; font-size: .82rem; }
+  .windows { background: linear-gradient(120deg, rgba(10,25,35,.55), transparent); }
+  .windows-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; }
+  .windows-grid h2 { margin-top: .9rem; }
+  .windows-grid > div:first-child > p { max-width: 35rem; margin: 1rem 0 1.7rem; }
+  .system-card { padding: 1.5rem; }
+  .windows-glyph { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 2.5rem; height: 2.5rem; margin-bottom: 1.5rem; transform: perspective(40px) rotateY(-8deg); }
+  .windows-glyph i { background: var(--color-cyan); opacity: .8; }
+  .system-card li { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-top: 1px solid var(--color-line); font-size: .76rem; }
+  .system-card li span { color: var(--color-text-muted); }
+  .system-card li strong { font-weight: 550; text-align: right; }
+  .system-card .pending { color: var(--color-amber); }
+  .beta-cta { text-align: center; }
+  .cta-inner { max-width: 54rem; }
+  .cta-inner h2 { margin-top: 1rem; }
+  .cta-inner p { max-width: 42rem; margin: 1.2rem auto 1.8rem; }
+  .faq-grid { display: grid; grid-template-columns: .65fr 1fr; gap: clamp(3rem, 8vw, 8rem); }
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-copy { max-width: 43rem; }
+    .decision-grid, .faq-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    .understanding-grid, .windows-grid { grid-template-columns: 1fr; }
+    .scenario-track { grid-template-columns: 1fr; }
+    .scenario-track article { min-height: auto; }
+    .scenario-track article + article { border-top: 1px solid var(--color-line); border-left: 0; }
+    .scenario-track h3 { margin-top: 2.5rem; }
+    .screenshot-grid { grid-template-columns: 1fr; }
+    .workflow-list li { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
+    .workflow-list li > div { display: block; }
+    .workflow-list p { margin-top: .35rem; }
+  }
+  @media (max-width: 520px) {
+    .hero-meta { justify-content: flex-start; flex-wrap: wrap; line-height: 1.5; }
+    .decision-top { grid-template-columns: 1fr; }
+    .decision-top > div + div { border-top: 1px solid var(--color-line); border-left: 0; }
+    .context-orbit { min-height: 25rem; }
+    .ring-b { width: 21rem; height: 21rem; }
+    .scenario-ribbon { grid-template-columns: 1fr; text-align: center; }
+    .scenario-ribbon i { width: 1px; height: .75rem; margin-inline: auto; }
+    .system-card li { flex-direction: column; gap: .2rem; }
+    .system-card li strong { text-align: left; }
+  }
+</style>

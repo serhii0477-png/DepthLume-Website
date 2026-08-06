@@ -1,0 +1,26 @@
+---
+import { site } from '../config/site';
+import { localeConfig, locales, localizedPath, pageFromPath, type Locale } from '../i18n/locales';
+interface Props { title: string; description: string; path?: string; noindex?: boolean; locale?: Locale; }
+const { title, description, path = '/', noindex = false, locale = 'en' } = Astro.props;
+const canonical = new URL(path, site.url).toString();
+const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
+const page = pageFromPath(path);
+---
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{locales.map((item) => <link rel="alternate" hreflang={localeConfig[item].htmlLang} href={new URL(localizedPath(item,page),site.url).toString()} />)}
+<link rel="alternate" hreflang="x-default" href={new URL(localizedPath('en',page),site.url).toString()} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={localeConfig[locale].ogLocale} />
+{locales.filter((item) => item !== locale).map((item) => <meta property="og:locale:alternate" content={localeConfig[item].ogLocale} />)}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="sitemap" href="/sitemap-index.xml" />

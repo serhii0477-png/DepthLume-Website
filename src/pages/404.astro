@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+---
+<BaseLayout title="Page Not Found" description="The requested DepthLume page could not be found." path="/404/" noindex>
+  <section class="not-found container">
+    <div class="error-code mono">04<span>◌</span>04</div><span class="eyebrow">Outside observed range</span><h1>That page is below the surface.</h1><p>The address may have changed, or the page may not exist in this website iteration.</p><Button href="/" variant="primary">Return Home</Button>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { display: grid; min-height: 65vh; max-width: 48rem; place-items: start; align-content: center; padding-block: 5rem; }
+  .error-code { margin-bottom: 1.5rem; color: var(--color-text-muted); font-size: clamp(4rem, 16vw, 9rem); line-height: .8; letter-spacing: -.12em; opacity: .22; }
+  .error-code span { color: var(--color-cyan); }
+  h1 { margin-top: 1rem; font-size: var(--step-3); }
+  p { margin: 1rem 0 1.7rem; }
+</style>

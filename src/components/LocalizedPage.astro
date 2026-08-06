@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from './Button.astro';
+import ProductWorkspace from './ProductWorkspace.astro';
+import ProductShowcase from './ProductShowcase.astro';
+import SectionHeading from './SectionHeading.astro';
+import FAQ from './FAQ.astro';
+import { featureNames, getTranslation } from '../i18n/translations';
+import { localizedPath, localeConfig, type Locale, type PublicPage } from '../i18n/locales';
+interface Props { locale: Locale; page: PublicPage; }
+const { locale, page } = Astro.props;
+const t = getTranslation(locale);
+const meta = t.meta[page];
+const path = localizedPath(locale, page);
+const schema = page === '' ? { '@context':'https://schema.org','@type':'SoftwareApplication',name:'DepthLume',applicationCategory:'FinanceApplication',operatingSystem:'Windows',description:meta.description,url:new URL(path,'https://depthlume.com').toString() } : null;
+const featureItems = featureNames.map((name,index) => ({ name, text:t.home.featureDescriptions[index] }));
+---
+<BaseLayout title={meta.title} description={meta.description} {path} {locale}>
+  {schema && <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(schema)}></script>}
+  {page === '' ? (
+    <>
+      <section class="localized-hero"><div class="container localized-hero-grid"><div class="localized-copy"><span class="eyebrow">{t.home.hero[0]}</span><h1>{t.home.hero[1]}</h1><p>{t.home.hero[2]}</p><div class="localized-actions"><Button href="#market-understanding" variant="primary">{t.home.hero[3]}</Button><Button href={localizedPath(locale,'closed-beta')}>{t.home.hero[4]}</Button></div><small>✓ {t.home.hero[5]}</small></div><ProductWorkspace caption={t.home.realCaption} alt={t.home.realAlt} ui={[t.home.sections[4][0],t.home.sections[4][1],'',featureNames[6],t.home.sections[4][1]]} /></div></section>
+
+      <section id="market-understanding" class="section section--line"><div class="container editorial"><SectionHeading eyebrow={t.home.sections[0][0]} title={t.home.sections[0][1]} description={t.home.featureDescriptions[6]} /><div class="evidence-compact">{featureItems.slice(0,6).map((item,index) => <article><span class="mono">0{index+1}</span><div><h3>{item.name}</h3><p>{item.text}</p></div></article>)}</div></div></section>
+
+      <section class="section section--line decision-local"><div class="container"><SectionHeading eyebrow={t.home.sections[1][0]} title={t.home.sections[1][1]} description={t.home.steps[3][1]} /><div class="decision-strip"><article><span>+</span><h3>{t.home.sections[0][0]}</h3><p>{t.home.featureDescriptions[6]}</p></article><article><span>±</span><h3>{t.home.sections[1][0]}</h3><p>{t.home.faqs[1][1]}</p></article><article><span>!</span><h3>{t.pages['risk-disclaimer'].heading}</h3><p>{t.home.faqs[4][1]}</p></article></div></div></section>
+
+      <section id="scenario-lab" class="section section--line"><div class="container"><SectionHeading eyebrow={t.home.sections[2][0]} title={t.home.sections[2][1]} description={t.home.featureDescriptions[8]} /><div class="scenario-local">{t.home.steps.slice(0,3).map((step,index) => <article><span class="mono">0{index+1}</span><h3>{step[0]}</h3><p>{step[1]}</p></article>)}</div></div></section>
+
+      <section id="features" class="section section--line"><div class="container"><SectionHeading eyebrow={t.home.sections[3][0]} title={t.home.sections[3][1]} /><div class="localized-features">{featureItems.map((item,index) => <article><span class="mono">{String(index+1).padStart(2,'0')}</span><h3>{item.name}</h3><p>{item.text}</p></article>)}</div></div></section>
+
+      <section id="screenshots" class="section section--line"><div class="container"><SectionHeading eyebrow={t.home.sections[4][0]} title={t.home.sections[4][1]} description={t.home.realCaption} /><ProductShowcase caption={t.home.realCaption} alt={t.home.realAlt} labels={[t.home.sections[4][0],featureNames[6],featureNames[2],t.home.featureDescriptions[5]]} /></div></section>
+
+      <section id="how-it-works" class="section section--line"><div class="container"><SectionHeading eyebrow={t.home.sections[5][0]} title={t.home.sections[5][1]} /><ol class="steps-local">{t.home.steps.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div></section>
+
+      <section class="section section--line"><div class="container windows-local"><div><span class="eyebrow">{t.home.sections[6][0]}</span><h2>{t.home.sections[6][1]}</h2><p>{t.home.hero[5]}</p></div><div class="windows-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div></section>
+
+      <section class="section section--line beta-local"><div class="container"><span class="eyebrow">{t.home.sections[7][0]}</span><h2>{t.home.sections[7][1]}</h2><Button href={localizedPath(locale,'closed-beta')} variant="primary">{t.home.hero[4]}</Button></div></section>
+
+      <section id="faq" class="section section--line"><div class="container faq-local"><SectionHeading eyebrow={t.home.sections[8][0]} title={t.home.sections[8][1]} /><FAQ items={t.home.faqs.map(([q,a]) => ({q,a}))} /></div></section>
+      <section class="section--compact section--line"><div class="container localized-risk"><strong>!</strong><p>{t.home.faqs[4][1]} {t.pages['risk-disclaimer'].body}</p></div></section>
+    </>
+  ) : (
+    <article class="container prose-page localized-prose">
+      <header><span class="eyebrow">{t.pages[page].description}</span><h1>{t.pages[page].title}</h1><p class="lede">{t.pages[page].lede}</p></header>
+      <div class="provisional">{t.pages[page].notice}</div>
+      <section><h2>{t.pages[page].heading}</h2><p>{t.pages[page].body}</p></section>
+      {(['privacy','terms','risk-disclaimer'] as PublicPage[]).includes(page) && <aside class="legal-local">{t.legalReview}</aside>}
+      <p class="locale-note mono">{localeConfig[locale].nativeName} · DepthLume</p>
+    </article>
+  )}
+</BaseLayout>
+
+<style>
+  .localized-hero { padding: clamp(3.5rem,7vw,6rem) 0 2rem; }
+  .localized-hero-grid { display:grid; grid-template-columns:minmax(20rem,.72fr) minmax(36rem,1.28fr); gap:clamp(2.5rem,5vw,5rem); align-items:center; }
+  .localized-copy h1 { max-width: 10ch; margin-top:1rem; }
+  .localized-copy > p { max-width:36rem; margin-top:1.2rem; font-size:var(--step-1); }
+  .localized-actions { display:flex; flex-wrap:wrap; gap:.7rem; margin:1.7rem 0 1rem; }
+  .localized-copy small { color:var(--color-text-muted); }
+  .editorial { display:grid; grid-template-columns:.75fr 1.25fr; gap:clamp(3rem,8vw,8rem); }
+  .evidence-compact { border-top:1px solid var(--color-line); }
+  .evidence-compact article { display:grid; grid-template-columns:2rem 1fr; gap:1rem; padding:1rem 0; border-bottom:1px solid var(--color-line); }
+  .evidence-compact span { color:var(--color-cyan); font-size:.65rem; }
+  .evidence-compact h3 { font-size:.92rem; } .evidence-compact p { font-size:.8rem; }
+  .decision-local { background:rgba(8,18,26,.35); }
+  .decision-strip,.scenario-local { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--color-line); }
+  .decision-strip article,.scenario-local article { padding:1.4rem; }
+  .decision-strip article+article,.scenario-local article+article { border-left:1px solid var(--color-line); }
+  .decision-strip span { color:var(--color-cyan); font:1rem var(--font-mono); }
+  .decision-strip h3,.scenario-local h3 { margin:.8rem 0 .5rem; font-size:1rem; }
+  .decision-strip p,.scenario-local p { font-size:.8rem; }
+  .scenario-local span { color:var(--color-cyan); font-size:.65rem; }
+  .localized-features { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--color-line); border-left:1px solid var(--color-line); }
+  .localized-features article { min-height:12rem; padding:1.2rem; border-right:1px solid var(--color-line); border-bottom:1px solid var(--color-line); }
+  .localized-features span { color:var(--color-cyan); font-size:.62rem; }
+  .localized-features h3 { margin:2rem 0 .5rem; font-size:.95rem; }
+  .localized-features p { font-size:.78rem; }
+  .steps-local { list-style:none; border-top:1px solid var(--color-line); }
+  .steps-local li { display:grid; grid-template-columns:3rem 1fr; gap:1rem; padding:1.1rem 0; border-bottom:1px solid var(--color-line); }
+  .steps-local span { color:var(--color-cyan); font-size:.65rem; } .steps-local p { font-size:.8rem; }
+  .windows-local { display:flex; align-items:center; justify-content:space-between; gap:2rem; }
+  .windows-local h2 { margin-top:.8rem; } .windows-local p { margin-top:.7rem; }
+  .windows-symbol { display:grid; grid-template-columns:1fr 1fr; gap:4px; width:5rem; height:5rem; }
+  .windows-symbol i { background:var(--color-cyan); opacity:.7; }
+  .beta-local { text-align:center; } .beta-local h2 { max-width:25ch; margin:1rem auto 1.5rem; }
+  .faq-local { display:grid; grid-template-columns:.7fr 1fr; gap:clamp(3rem,7vw,7rem); }
+  .localized-risk { display:grid; grid-template-columns:2rem 1fr; gap:1rem; padding:1rem; border:1px solid rgba(226,179,95,.25); border-radius:.6rem; background:rgba(226,179,95,.04); }
+  .localized-risk strong { color:var(--color-amber); } .localized-risk p { font-size:.78rem; }
+  .legal-local { margin-top:2rem; padding:1rem; border-left:2px solid var(--color-amber); color:var(--color-amber); }
+  .locale-note { margin-top:3rem; color:var(--color-text-muted); font-size:.65rem; }
+  @media(max-width:980px){.localized-hero-grid,.editorial,.faq-local{grid-template-columns:1fr}.localized-features{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.decision-strip,.scenario-local{grid-template-columns:1fr}.decision-strip article+article,.scenario-local article+article{border-left:0;border-top:1px solid var(--color-line)}.windows-local{align-items:flex-start;flex-direction:column}.localized-features{grid-template-columns:1fr}.localized-features article{min-height:auto}}
+</style>

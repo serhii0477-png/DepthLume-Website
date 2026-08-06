@@ -1,0 +1,35 @@
+---
+import { localeConfig, locales, localizedPath, pageFromPath, type Locale } from '../i18n/locales';
+interface Props { locale: Locale; pathname: string; mobile?: boolean; }
+const { locale, pathname, mobile = false } = Astro.props;
+const page = pageFromPath(pathname);
+---
+{mobile ? (
+  <div class="mobile-language">
+    <span>{localeConfig[locale].selectLabel}</span>
+    <div>{locales.map((item) => <a class:list={[item === locale && 'current']} href={localizedPath(item, page)} lang={localeConfig[item].htmlLang} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}</div>
+  </div>
+) : (
+  <details class="language-menu" data-language-menu>
+    <summary aria-label={localeConfig[locale].selectLabel}><span class="globe" aria-hidden="true">◎</span><span>{localeConfig[locale].nativeName}</span><span aria-hidden="true">⌄</span></summary>
+    <div class="language-popup" role="list">
+      {locales.map((item) => <a role="listitem" class:list={[item === locale && 'current']} href={localizedPath(item, page)} lang={localeConfig[item].htmlLang} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}
+    </div>
+  </details>
+)}
+
+<style>
+  .language-menu { position: relative; }
+  .language-menu summary { display: flex; min-height: 2.5rem; align-items: center; gap: .4rem; padding: .55rem .65rem; border: 1px solid var(--color-line); border-radius: .5rem; color: var(--color-text-soft); font-size: .76rem; list-style: none; white-space: nowrap; }
+  .language-menu summary::-webkit-details-marker { display: none; }
+  .globe { color: var(--color-cyan); font-family: var(--font-mono); }
+  .language-popup { position: absolute; top: calc(100% + .55rem); right: 0; z-index: 80; width: min(13rem, calc(100vw - 2rem)); padding: .45rem; border: 1px solid var(--color-line-strong); border-radius: .6rem; background: rgba(7,17,25,.99); box-shadow: var(--shadow-panel); }
+  .language-popup a { display: flex; min-height: 2.55rem; align-items: center; padding: .55rem .7rem; border-radius: .35rem; color: var(--color-text-soft); font-size: .8rem; }
+  .language-popup a:hover, .language-popup a.current { background: var(--color-cyan-dim); color: var(--color-text); }
+  .language-popup a.current::after { margin-left: auto; color: var(--color-cyan); content: '•'; }
+  .mobile-language { margin-top: .5rem; padding-top: .8rem; border-top: 1px solid var(--color-line); }
+  .mobile-language > span { display: block; padding: .45rem .8rem; color: var(--color-text-muted); font: .66rem/1 var(--font-mono); text-transform: uppercase; }
+  .mobile-language > div { display: grid; grid-template-columns: 1fr 1fr; }
+  .mobile-language a { min-height: 2.75rem; }
+  .mobile-language a.current { color: var(--color-cyan); background: var(--color-cyan-dim); }
+</style>

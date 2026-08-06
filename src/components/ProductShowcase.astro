@@ -1,0 +1,25 @@
+---
+interface Props { caption: string; alt: readonly [string,string,string,string]; labels?: readonly [string,string,string,string]; }
+const { caption, alt, labels = ['Market workspace','Market Context','Delta / CVD','Liquidity heatmap'] } = Astro.props;
+const items = [
+  { src:'/images/product/depthlume-chart.webp', srcset:'/images/product/depthlume-chart-640.webp 640w, /images/product/depthlume-chart.webp 990w', width:990, height:830, alt:alt[0], label:labels[0], large:true },
+  { src:'/images/product/depthlume-market-context.webp', width:363, height:78, alt:alt[1], label:labels[1] },
+  { src:'/images/product/depthlume-delta-cvd.webp', width:985, height:353, alt:alt[2], label:labels[2] },
+  { src:'/images/product/depthlume-heatmap.webp', width:1210, height:304, alt:alt[3], label:labels[3] },
+];
+---
+<div class="real-showcase">
+  {items.map((item) => <figure class:list={[item.large && 'large']}><div class="image-head"><span>{item.label}</span></div><img src={item.src} srcset={item.srcset} sizes={item.large ? '(max-width: 760px) 100vw, 58vw' : '(max-width: 760px) 100vw, 32vw'} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" /><figcaption>{caption}</figcaption></figure>)}
+</div>
+
+<style>
+  .real-showcase { display: grid; grid-template-columns: 1.45fr .8fr; grid-template-rows: repeat(3, auto); gap: 1rem; }
+  figure { min-width: 0; overflow: hidden; margin: 0; border: 1px solid var(--color-line); border-radius: .7rem; background: var(--color-panel); }
+  figure.large { grid-row: 1 / 4; }
+  .image-head { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem .85rem; border-bottom: 1px solid var(--color-line); color: var(--color-text); font-size: .78rem; }
+  .image-head .mono { color: var(--color-text-muted); font-size: .62rem; }
+  img { display: block; width: 100%; height: 9.5rem; object-fit: cover; object-position: center; }
+  .large img { height: 34rem; }
+  figcaption { padding: .65rem .85rem; color: var(--color-text-muted); font-size: .68rem; line-height: 1.45; }
+  @media (max-width: 760px) { .real-showcase { grid-template-columns: 1fr; } figure.large { grid-row: auto; } .large img { height: 25rem; } img { height: auto; max-height: 18rem; } }
+</style>

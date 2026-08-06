@@ -1,0 +1,10 @@
+{
+  "name": "DepthLume",
+  "short_name": "DepthLume",
+  "description": "Professional Windows desktop market intelligence for cryptocurrency futures research.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050b10",
+  "theme_color": "#071119",
+  "icons": []
+}

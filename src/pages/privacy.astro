@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+<!-- LEGAL REVIEW REQUIRED: Replace this preliminary content before public launch. -->
+<BaseLayout title="Preliminary Privacy Notice" description="Preliminary privacy information for the local DepthLume website prototype." path="/privacy/">
+  <article class="container prose-page">
+    <header><span class="eyebrow">Legal / Preliminary</span><h1>Privacy notice</h1><p class="lede">This preliminary notice describes the current local website prototype. It is not final legal text.</p></header>
+    <div class="provisional">Final legal review is required before public launch. No production data collection is configured in this iteration.</div>
+    <section><h2>Current website prototype</h2><p>This static local prototype does not include accounts, forms, payments, analytics, advertising trackers or external tracking scripts. It does not intentionally collect or transmit personal information.</p></section>
+    <section><h2>Future services</h2><p>Closed beta registration, support tools, hosting logs or other future services may process information. Their purposes, lawful basis, retention and user rights must be documented before those services are enabled.</p></section>
+    <section><h2>Desktop application</h2><p>The application’s final privacy disclosures will depend on validated data sources, diagnostics and update mechanisms. They are not defined by this website prototype.</p></section>
+    <section><h2>Contact</h2><p>The official privacy contact is pending: <code>{site.contactPlaceholder}</code>.</p></section>
+    <section><h2>Effective date</h2><p>Not yet effective. Preliminary website copy dated August 2026.</p></section>
+  </article>
+</BaseLayout>
