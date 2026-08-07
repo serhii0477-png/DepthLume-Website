@@ -126,7 +126,7 @@ Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-form
 
 ## Email verification
 
-With `RESEND_API_KEY` and `EMAIL_FROM`, verification and reset links are emailed. In `development`, APIs also return test links. Without a provider, new production accounts remain unverified by design.
+With `RESEND_API_KEY` and `EMAIL_FROM`, verification and reset links are emailed. Registering an already existing but unverified email safely issues a fresh verification link and invalidates its earlier unused links. In `development`, APIs also return test links. Without a provider, new production accounts remain unverified by design.
 
 Production Resend delivery is still pending. Configure both secrets in Cloudflare Pages only after verifying a sender domain in Resend; never put their real values in this repository.
 

@@ -164,6 +164,8 @@ For browser direct upload, configure the private R2 bucket's CORS policy for the
 
 The Resend code path already exists in `functions/_lib/email.ts`. Registration and forgotten-password APIs call it. Until both Resend settings are present, new production users will not receive verification or reset messages.
 
+After Resend is configured, registering an existing unverified email creates a new one-time verification link and invalidates previous unused verification links. The response remains generic so the endpoint does not reveal whether an arbitrary email has an account.
+
 ## 8. Local development and verification
 
 UI only:
