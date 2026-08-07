@@ -4,10 +4,11 @@ This document is the working context for continuing the project in a new Codex o
 
 ## Checkpoint: 2026-08-07
 
-The project is being preserved after two completed infrastructure changes:
+The project is being preserved after completed production rollout:
 
 1. **Large private releases** use a direct, 15-minute signed R2 `PUT`, then D1 finalization after the backend verifies the object. This flow has been deployed and a Radar release was successfully uploaded privately.
-2. **Radar licensing** is implemented locally in this repository: D1 migration `0003_licenses.sql`, the three desktop API endpoints, and the administrator license interface are ready. Tests, type checking and production build pass. It must be deployed and its migration applied before desktop activation can be considered live.
+2. **Radar licensing** is deployed: D1 migration `0003_licenses.sql`, the three desktop API endpoints and the administrator license interface are live. A non-admin beta user has received an administrator-issued key and successfully activated Radar.
+3. **Custom domain and email** are live: `https://depthlume.com` is the public origin, and Resend delivery uses a verified sender domain. No secret values are recorded in this repository.
 
 The existing beta account model remains the source of truth. An administrator must grant a verified account beta access before issuing it a license. A raw `DL-...` activation key appears one time only. If it is copied with additional text or lost, revoke that license and issue a replacement instead of trying to recover the original key.
 
@@ -125,7 +126,7 @@ At `/admin/`, first grant a verified account beta access, then create its Radar 
 [Environment]::SetEnvironmentVariable("DEPTHLUME_LICENSE_API_URL", "https://depthlume.com", "User")
 ```
 
-Before the feature is deployed, run `npm run db:migrate:remote`; this applies `0003_licenses.sql`. Licensing uses the existing `DB` D1 binding and needs no extra Cloudflare secret or public R2 configuration.
+The licensing migration has been applied in production. Licensing uses the existing `DB` D1 binding and needs no extra Cloudflare secret or public R2 configuration.
 
 ## 6. Cloudflare production state
 
@@ -156,13 +157,13 @@ Never commit `.dev.vars`, `.env`, Cloudflare tokens, passwords or secret values.
 Expected secrets:
 
 - `ADMIN_BOOTSTRAP_SECRET` — used only for the first administrator; remove or rotate it after bootstrap.
-- `RESEND_API_KEY` — still needs production configuration.
-- `EMAIL_FROM` — still needs production configuration and must use a Resend-verified domain.
+- `RESEND_API_KEY` — configured as a production secret; never record its value.
+- `EMAIL_FROM` — configured as a production secret using a Resend-verified sender domain; never record its value.
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` — required for direct releases above the Pages request limit. Create a bucket-scoped R2 S3 API token with only Object Read & Write on `depthlume-private-releases`; save all three as Pages production secrets. Do not put them in `wrangler.toml` or Git.
 
 For browser direct upload, configure the private R2 bucket's CORS policy for the exact production origin(s), `PUT`, and the `Content-Type` header. This does not make the bucket public. The required Pages binding remains `RELEASES`; no additional binding is needed. Run migration `0002_release_uploads.sql` before production deployment.
 
-The Resend code path already exists in `functions/_lib/email.ts`. Registration and forgotten-password APIs call it. Until both Resend settings are present, new production users will not receive verification or reset messages.
+The Resend code path in `functions/_lib/email.ts` is active. Registration and forgotten-password APIs use it for production messages. For a delivery problem, inspect Resend email activity and the sender-domain status without exposing API-key values.
 
 After Resend is configured, registering an existing unverified email creates a new one-time verification link and invalidates previous unused verification links. The response remains generic so the endpoint does not reveal whether an arbitrary email has an account.
 
@@ -209,16 +210,13 @@ The build validates localized routes, internal links, SEO alternates and prohibi
 
 ## 10. Known remaining work
 
-1. Verify a sender domain in Resend and set `RESEND_API_KEY` plus `EMAIL_FROM` in Cloudflare production.
-2. Test registration email verification and password recovery end to end.
-3. Add the R2 S3 signing secrets and bucket CORS policy, apply migration `0002_release_uploads.sql`, then upload the first approved private DepthLume Radar release through `/admin/`.
-4. Apply `0003_licenses.sql`, deploy the license APIs, create a beta test key in `/admin/`, then verify Radar activation, validation and device deactivation end to end.
-5. Review beta application, approval, download and feedback flows with a non-admin test account.
-6. Replace placeholder company/contact/legal details and obtain legal review.
-7. Perform native-language review of all translations.
-8. Add analytics/visitor reporting if not already enabled in Cloudflare Web Analytics.
-9. When DepthLume itself is ready, create its dedicated product page using the Radar product-page pattern.
-10. Add final logo, favicon and social-sharing image.
+1. Periodically review Resend delivery activity and sender-domain status.
+2. Review beta application, approval, download and feedback flows with further non-admin test accounts.
+3. Replace placeholder company/contact/legal details and obtain legal review.
+4. Perform native-language review of all translations.
+5. Add analytics/visitor reporting if not already enabled in Cloudflare Web Analytics.
+6. When DepthLume itself is ready, create its dedicated product page using the Radar product-page pattern.
+7. Add final logo, favicon and social-sharing image.
 
 ## 11. Suggested prompt for a new ChatGPT conversation
 

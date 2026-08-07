@@ -20,7 +20,7 @@ The public HTML remains static. Private data and files are returned only by auth
 
 ## Current checkpoint
 
-The direct private R2 release upload flow has been deployed and successfully used for a Radar release. Website-side licensing is implemented in this repository and has passed unit, type and production-build checks. Before issuing the first real desktop license, deploy the current commit and apply migration `0003_licenses.sql`; then verify activation with a newly created key. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
+The direct private R2 release upload flow has been deployed and successfully used for a Radar release. Website-side licensing is deployed: a beta user has been approved, downloaded Radar, received an administrator-issued key and activated the desktop application. Production email delivery is configured through Resend and the public origin is `https://depthlume.com`. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
 
 ## Current product structure
 
@@ -122,13 +122,13 @@ Before the first production large upload, create an R2 S3 API token restricted t
 ]
 ```
 
-Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-format file with `npx wrangler r2 bucket cors set depthlume-private-releases --file r2-release-cors.json`. Add the production custom-domain origin as an additional exact value if one is used. The bucket remains private.
+Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-format file with `npx wrangler r2 bucket cors set depthlume-private-releases --file r2-release-cors.json`. The configuration includes the production custom domain and retains the legacy `pages.dev` address during the transition. The bucket remains private.
 
 ## Email verification
 
 With `RESEND_API_KEY` and `EMAIL_FROM`, verification and reset links are emailed. Registering an already existing but unverified email safely issues a fresh verification link and invalidates its earlier unused links. In `development`, APIs also return test links. Without a provider, new production accounts remain unverified by design.
 
-Production Resend delivery is still pending. Configure both secrets in Cloudflare Pages only after verifying a sender domain in Resend; never put their real values in this repository.
+Production Resend delivery uses a verified sender domain. Keep `RESEND_API_KEY` and `EMAIL_FROM` as Cloudflare Pages secrets only; never put their real values in this repository. If delivery stops, first check the Resend email activity log and sender-domain status.
 
 ## Desktop licensing
 
@@ -183,6 +183,6 @@ npx wrangler pages deploy dist --project-name=depthlume-preview --branch=main
 
 - Legal copy needs counsel review.
 - Translations need native-speaker review.
-- Production email requires a provider.
+- Production email depends on the configured Resend sender domain and API key remaining active.
 - Direct release upload uses a single presigned R2 `PUT`; it supports releases up to 1 GiB. An interrupted upload must be restarted. Move to presigned multipart upload only when resumability or releases above 1 GiB are required.
 - DepthLume Radar is analytics software, not a trading system or financial adviser.

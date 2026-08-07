@@ -6,6 +6,7 @@
 
 - Set `https://depthlume.com` as the canonical `APP_URL` for email links and documented it as the public production origin.
 - Added `https://depthlume.com` to private R2 release-upload CORS while retaining the legacy `pages.dev` origin for safe transition.
+- Verified the production custom domain and direct private R2 release upload flow.
 
 ### Secure large release delivery
 
@@ -22,10 +23,12 @@
 - Added administrator-only Radar license issuance and status management to `/admin/`.
 - License keys and desktop tokens are never stored or logged in plaintext; the displayed activation key is available only once.
 - License checks retain the existing website account, beta-access and protected-download model.
+- Verified the complete live beta flow: administrator approval, protected download, one-time key issuance and desktop activation.
 
 ### Account verification
 
 - Registration now safely resends a verification email for an existing unverified account, while invalidating earlier unused verification links and retaining an account-enumeration-safe response.
+- Configured and verified production Resend delivery through a verified sender domain; secret values remain outside Git.
 
 ### Verification
 
