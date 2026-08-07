@@ -1,0 +1,11 @@
+---
+import RadarProductPage from '../../components/RadarProductPage.astro';
+import { localeConfig, localizedLocales, type Locale } from '../../i18n/locales';
+
+export function getStaticPaths() {
+  return localizedLocales.map((locale) => ({ params:{ lang:localeConfig[locale].prefix }, props:{ locale } }));
+}
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+---
+<RadarProductPage {locale} />

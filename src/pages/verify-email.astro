@@ -1,0 +1,8 @@
+---
+import PortalPage from '../components/PortalPage.astro';
+---
+<PortalPage title="Підтвердження email" description="Перевіряємо одноразове посилання…"><div class="portal-card"><p class="form-status" data-verify-status aria-live="polite">Зачекайте…</p><a class="button button--primary" href="/login/" hidden data-login>Перейти до входу</a></div></PortalPage>
+<script>
+  const status=document.querySelector<HTMLElement>('[data-verify-status]');const button=document.querySelector<HTMLElement>('[data-login]');const token=new URLSearchParams(location.search).get('token');
+  fetch('/api/auth/verify-email',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token})}).then(async r=>({ok:r.ok,data:await r.json() as any})).then(({ok,data})=>{if(status)status.textContent=ok?'Email підтверджено. Тепер увійдіть.':data.error;if(ok&&button)button.hidden=false;}).catch(()=>{if(status)status.textContent='Не вдалося підтвердити email.'});
+</script>

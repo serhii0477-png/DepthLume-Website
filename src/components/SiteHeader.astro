@@ -1,45 +1,102 @@
 ---
-import Button from './Button.astro';
 import BrandMark from './BrandMark.astro';
 import LanguageSelector from './LanguageSelector.astro';
-import { localizedPath, type Locale } from '../i18n/locales';
+import { localeConfig, locales, localizedPath, type Locale } from '../i18n/locales';
 import { getTranslation } from '../i18n/translations';
+
 interface Props { locale?: Locale; pathname?: string; }
 const { locale = 'en', pathname = '/' } = Astro.props;
 const t = getTranslation(locale);
 const home = localizedPath(locale, '');
+const radarPath = '/' + (localeConfig[locale].prefix ? localeConfig[locale].prefix + '/' : '') + 'radar/';
 const navigation = [
-  { label:t.nav[0], href:`${home}#features` }, { label:t.nav[1], href:`${home}#how-it-works` },
-  { label:t.nav[2], href:`${home}#scenario-lab` }, { label:t.nav[3], href:`${home}#screenshots` },
-  { label:t.nav[4], href:`${home}#faq` }, { label:t.nav[5], href:localizedPath(locale,'documentation') },
+  { label:t.nav[0], href:`${home}#features` },
+  { label:t.nav[1], href:`${home}#how-it-works` },
+  { label:t.nav[2], href:`${home}#scenario-lab` },
+  { label:t.nav[3], href:`${home}#screenshots` },
+  { label:t.nav[4], href:`${home}#faq` },
+  { label:t.nav[5], href:localizedPath(locale,'documentation') },
 ];
+
+const chrome: Record<Locale, { products:string; radar:string; radarMeta:string; depthlume:string; soon:string; account:string; login:string; logout:string }> = {
+  en:{products:'Product',radar:'DepthLume Radar',radarMeta:'Live beta · Windows',depthlume:'DepthLume',soon:'Coming after Radar beta',account:'Account',login:'Sign in',logout:'Sign out'},
+  uk:{products:'Продукт',radar:'DepthLume Radar',radarMeta:'Активна beta · Windows',depthlume:'DepthLume',soon:'Після beta-тестів Radar',account:'Кабінет',login:'Увійти',logout:'Вийти'},
+  ru:{products:'Продукт',radar:'DepthLume Radar',radarMeta:'Активная beta · Windows',depthlume:'DepthLume',soon:'После beta-тестов Radar',account:'Кабинет',login:'Войти',logout:'Выйти'},
+  es:{products:'Producto',radar:'DepthLume Radar',radarMeta:'Beta activa · Windows',depthlume:'DepthLume',soon:'Después de la beta de Radar',account:'Cuenta',login:'Entrar',logout:'Salir'},
+  'pt-BR':{products:'Produto',radar:'DepthLume Radar',radarMeta:'Beta ativo · Windows',depthlume:'DepthLume',soon:'Após o beta do Radar',account:'Conta',login:'Entrar',logout:'Sair'},
+  de:{products:'Produkt',radar:'DepthLume Radar',radarMeta:'Aktive Beta · Windows',depthlume:'DepthLume',soon:'Nach der Radar-Beta',account:'Konto',login:'Anmelden',logout:'Abmelden'},
+  tr:{products:'Ürün',radar:'DepthLume Radar',radarMeta:'Aktif beta · Windows',depthlume:'DepthLume',soon:'Radar beta sonrasında',account:'Hesap',login:'Giriş',logout:'Çıkış'},
+  'zh-CN':{products:'产品',radar:'DepthLume Radar',radarMeta:'测试中 · Windows',depthlume:'DepthLume',soon:'Radar 测试后推出',account:'账户',login:'登录',logout:'退出'},
+};
+
+const clientCopy = Object.fromEntries(locales.map((item) => [item, {
+  ...chrome[item],
+  nav:getTranslation(item).nav,
+  home:localizedPath(item,''),
+  documentation:localizedPath(item,'documentation'),
+  radarPath:'/' + (localeConfig[item].prefix ? localeConfig[item].prefix + '/' : '') + 'radar/',
+  htmlLang:localeConfig[item].htmlLang,
+  nativeName:localeConfig[item].nativeName,
+}]));
+const explicitLocale = pathname.split('/').filter(Boolean)[0]?.toLowerCase();
+const isExplicitLocale = locales.some((item) => localeConfig[item].prefix === explicitLocale && Boolean(explicitLocale));
 ---
-<header class="site-header" data-site-header>
+<header class="site-header" data-site-header data-page-locale={locale} data-explicit-locale={String(isExplicitLocale)}>
   <div class="container header-inner">
-    <a class="brand" href={home} aria-label="DepthLume home">
+    <a class="brand" href={home} aria-label="DepthLume home" data-home-link>
       <BrandMark />
       <span>DepthLume</span>
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
-      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <details class="product-menu" data-popover-menu>
+        <summary><span data-products-label>{chrome[locale].products}</span><span aria-hidden="true">⌄</span></summary>
+        <div class="product-popup">
+          <a href={radarPath} data-product-radar>
+            <span><i aria-hidden="true"></i><strong>{chrome[locale].radar}</strong></span>
+            <small data-radar-meta>{chrome[locale].radarMeta}</small>
+          </a>
+          <a class="product-future" href={home} data-depthlume-product data-home-link>
+            <span><i aria-hidden="true"></i><strong>{chrome[locale].depthlume}</strong></span>
+            <small data-product-soon>{chrome[locale].soon}</small>
+          </a>
+        </div>
+      </details>
+      {navigation.map((item,index) => <a href={item.href} data-nav-index={index}>{item.label}</a>)}
       <LanguageSelector {locale} {pathname} />
-      <Button href={localizedPath(locale,'closed-beta')} variant="secondary">{t.nav[6]}</Button>
+      <a href="/account/" data-account-link>{chrome[locale].account}</a>
+      <a class="button button--secondary header-auth" href="/login/" data-auth-action><span>{chrome[locale].login}</span><span aria-hidden="true">→</span></a>
     </nav>
     <button class="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation" data-menu-toggle>
       <span></span><span></span>
     </button>
   </div>
   <nav id="mobile-navigation" class="mobile-nav" aria-label="Mobile navigation" hidden data-mobile-nav>
-    {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
-    <a href={localizedPath(locale,'closed-beta')}>{t.nav[6]}</a>
+    <div class="mobile-product-title" data-products-label>{chrome[locale].products}</div>
+    <a href={radarPath} data-product-radar><strong>{chrome[locale].radar}</strong><small data-radar-meta>{chrome[locale].radarMeta}</small></a>
+    <a class="mobile-product-future" href={home} data-depthlume-product data-home-link><strong>{chrome[locale].depthlume}</strong><small data-product-soon>{chrome[locale].soon}</small></a>
+    {navigation.map((item,index) => <a href={item.href} data-nav-index={index}>{item.label}</a>)}
+    <a href="/account/" data-account-link>{chrome[locale].account}</a>
+    <a href="/login/" data-auth-action><span>{chrome[locale].login}</span></a>
     <LanguageSelector {locale} {pathname} mobile />
   </nav>
+  <script is:inline type="application/json" data-header-copy set:html={JSON.stringify(clientCopy)}></script>
 </header>
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-site-header]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const nav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  const storageKey = 'depthlume.locale';
+  const copyNode = header?.querySelector<HTMLScriptElement>('[data-header-copy]');
+  const allCopy = copyNode ? JSON.parse(copyNode.textContent || '{}') : {};
+  const supported = Object.keys(allCopy);
+  const pageLocale = header?.dataset.pageLocale || 'en';
+  const explicit = header?.dataset.explicitLocale === 'true';
+  let activeLocale = explicit ? pageLocale : (localStorage.getItem(storageKey) || pageLocale);
+  if (!supported.includes(activeLocale)) activeLocale = pageLocale;
+  if (explicit) localStorage.setItem(storageKey, activeLocale);
+  let signedIn = false;
+
   const closeMenu = () => {
     if (!toggle || !nav) return;
     toggle.setAttribute('aria-expanded', 'false');
@@ -55,8 +112,68 @@ const navigation = [
     if (!open) nav.querySelector<HTMLElement>('a')?.focus();
   });
   nav?.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('a')) closeMenu(); });
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeMenu(); toggle?.focus(); } });
-  document.querySelectorAll<HTMLDetailsElement>('[data-language-menu]').forEach((menu) => {
+
+  const applyLocale = (nextLocale:string) => {
+    const selected = allCopy[nextLocale];
+    if (!selected) return;
+    activeLocale = nextLocale;
+    document.documentElement.lang = selected.htmlLang;
+    document.querySelectorAll<HTMLElement>('[data-products-label]').forEach((item) => item.textContent = selected.products);
+    document.querySelectorAll<HTMLElement>('[data-radar-meta]').forEach((item) => item.textContent = selected.radarMeta);
+    document.querySelectorAll<HTMLElement>('[data-product-soon]').forEach((item) => item.textContent = selected.soon);
+    document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach((item) => item.href = selected.home);
+    document.querySelectorAll<HTMLAnchorElement>('[data-product-radar]').forEach((item) => item.href = selected.radarPath);
+    document.querySelectorAll<HTMLElement>('[data-product-radar] strong').forEach((item) => item.textContent = selected.radar);
+    document.querySelectorAll<HTMLElement>('.product-future strong,.mobile-product-future strong').forEach((item) => item.textContent = selected.depthlume);
+    document.querySelectorAll<HTMLAnchorElement>('[data-nav-index]').forEach((item) => {
+      const index = Number(item.dataset.navIndex);
+      item.textContent = selected.nav[index];
+      item.href = index === 5 ? selected.documentation : `${selected.home}#${['features','how-it-works','scenario-lab','screenshots','faq'][index]}`;
+    });
+    document.querySelectorAll<HTMLElement>('[data-account-link]').forEach((item) => item.textContent = selected.account);
+    document.querySelectorAll<HTMLAnchorElement>('[data-auth-action]').forEach((item) => {
+      const label = item.querySelector('span');
+      if (label) label.textContent = signedIn ? selected.logout : selected.login;
+      else item.textContent = signedIn ? selected.logout : selected.login;
+    });
+    document.querySelectorAll<HTMLAnchorElement>('[data-locale-choice]').forEach((item) => {
+      const current = item.dataset.localeChoice === nextLocale;
+      item.classList.toggle('current', current);
+      if (current) item.setAttribute('aria-current','page'); else item.removeAttribute('aria-current');
+    });
+    document.querySelectorAll<HTMLElement>('[data-language-current]').forEach((item) => item.textContent = selected.nativeName);
+  };
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-locale-choice]').forEach((item) => item.addEventListener('click', () => {
+    const selected = item.dataset.localeChoice;
+    if (selected) localStorage.setItem(storageKey, selected);
+  }));
+
+  const updateAuth = async () => {
+    try {
+      const response = await fetch('/api/auth/me', { headers:{ accept:'application/json' } });
+      const data = await response.json() as { user?: unknown };
+      signedIn = Boolean(data.user);
+    } catch { signedIn = false; }
+    document.querySelectorAll<HTMLAnchorElement>('[data-auth-action]').forEach((item) => {
+      item.href = signedIn ? '#' : '/login/';
+      item.onclick = signedIn ? async (event) => {
+        event.preventDefault();
+        await fetch('/api/auth/logout', { method:'POST' });
+        location.assign(allCopy[activeLocale]?.home || '/');
+      } : null;
+    });
+    applyLocale(activeLocale);
+  };
+
+  applyLocale(activeLocale);
+  updateAuth();
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    closeMenu();
+    document.querySelectorAll<HTMLDetailsElement>('[data-popover-menu],[data-language-menu]').forEach((menu) => menu.open = false);
+  });
+  document.querySelectorAll<HTMLDetailsElement>('[data-popover-menu],[data-language-menu]').forEach((menu) => {
     const trigger = menu.querySelector<HTMLElement>('summary');
     menu.addEventListener('toggle', () => { if (menu.open) menu.querySelector<HTMLElement>('a')?.focus(); });
     menu.addEventListener('keydown', (event) => { if (event.key === 'Escape') { menu.open = false; trigger?.focus(); } });
@@ -66,3 +183,20 @@ const navigation = [
   setHeaderState();
   window.addEventListener('scroll', setHeaderState, { passive: true });
 </script>
+
+<style>
+  .product-menu { position:relative; }
+  .product-menu summary { display:flex; min-height:2.5rem; align-items:center; gap:.45rem; padding:.55rem .7rem; border:1px solid var(--color-line); border-radius:.5rem; color:var(--color-text-soft); font-size:.78rem; list-style:none; cursor:pointer; }
+  .product-menu summary::-webkit-details-marker { display:none; }
+  .product-popup { position:absolute; top:calc(100% + .55rem); left:0; z-index:85; width:18rem; padding:.45rem; border:1px solid var(--color-line-strong); border-radius:.7rem; background:rgba(7,17,25,.99); box-shadow:var(--shadow-panel); }
+  .product-popup > a,.product-popup > span { display:block; padding:.75rem; border-radius:.45rem; }
+  .product-popup > a:hover { background:var(--color-cyan-dim); }
+  .product-popup > a > span { display:flex; align-items:center; gap:.55rem; }
+  .product-popup i { width:.42rem; aspect-ratio:1; border-radius:50%; background:var(--color-cyan); box-shadow:0 0 9px rgba(96,221,235,.55); }
+  .product-popup small,.mobile-product-future small,.mobile-nav [data-product-radar] small { display:block; margin:.3rem 0 0 1rem; color:var(--color-text-muted); font:.58rem var(--font-mono); }
+  .product-future { opacity:.68; }
+  .product-future i { background:var(--color-text-muted); box-shadow:none; }
+  .header-auth { gap:.55rem; }
+  .mobile-product-title { padding:.55rem .8rem; color:var(--color-text-muted); font:600 .62rem var(--font-mono); letter-spacing:.1em; text-transform:uppercase; }
+  .mobile-product-future { display:block; margin-bottom:.45rem; padding:.8rem; color:var(--color-text-muted); opacity:.55; }
+</style>

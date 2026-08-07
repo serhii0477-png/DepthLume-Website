@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from './Button.astro';
+import RadarLiveVisual from './RadarLiveVisual.astro';
+import SectionHeading from './SectionHeading.astro';
+import { featureNames, getTranslation } from '../i18n/translations';
+import { localeConfig, localizedPath, type Locale } from '../i18n/locales';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = getTranslation(locale);
+const prefix = localeConfig[locale].prefix;
+const path = '/' + (prefix ? prefix + '/' : '') + 'radar/';
+const home = localizedPath(locale, '');
+const selectedFeatures = [0,2,3,4,6,11].map((index) => ({ name:featureNames[index], text:t.home.featureDescriptions[index] }));
+
+const productCopy: Record<Locale, { label:string; coreMeta:string; radarMeta:string; eyebrow:string; title:string; description:string; primary:string; secondary:string; capabilityTitle:string; workflowTitle:string; boundaryTitle:string; boundaryText:string }> = {
+  en:{label:'Product',coreMeta:'Core platform · roadmap',radarMeta:'Active beta · Windows',eyebrow:'DepthLume Radar · First beta product',title:'See the market as a field, not a list.',description:'DepthLume Radar turns live public market data into a spatial overview of activity, then explains the selected market through evidence, risks and data quality.',primary:'Join Radar beta',secondary:'Open my account',capabilityTitle:'Radar intelligence, from overview to evidence.',workflowTitle:'A focused workflow for live market research.',boundaryTitle:'Analytics without trade execution.',boundaryText:'Radar does not connect to a trading account, place orders or promise outcomes. It organizes public market evidence so the user can make an independent decision.'},
+  uk:{label:'Продукт',coreMeta:'Основна платформа · roadmap',radarMeta:'Активна beta · Windows',eyebrow:'DepthLume Radar · Перший beta-продукт',title:'Бачте ринок як поле, а не як список.',description:'DepthLume Radar перетворює живі публічні ринкові дані на просторовий огляд активності, а потім пояснює вибраний ринок через докази, ризики та якість даних.',primary:'Долучитися до beta Radar',secondary:'Відкрити мій кабінет',capabilityTitle:'Radar-аналітика: від огляду до доказів.',workflowTitle:'Сфокусований процес дослідження живого ринку.',boundaryTitle:'Аналітика без виконання угод.',boundaryText:'Radar не підключається до торгового акаунта, не розміщує ордери й не обіцяє результатів. Він організовує публічні ринкові докази для самостійного рішення користувача.'},
+  ru:{label:'Продукт',coreMeta:'Основная платформа · roadmap',radarMeta:'Активная beta · Windows',eyebrow:'DepthLume Radar · Первый beta-продукт',title:'Смотрите на рынок как на поле, а не как на список.',description:'DepthLume Radar превращает живые публичные данные в пространственный обзор активности и объясняет выбранный рынок через доказательства, риски и качество данных.',primary:'Присоединиться к beta Radar',secondary:'Открыть мой кабинет',capabilityTitle:'Radar-аналитика: от обзора к доказательствам.',workflowTitle:'Сфокусированный процесс исследования живого рынка.',boundaryTitle:'Аналитика без исполнения сделок.',boundaryText:'Radar не подключается к торговому счету, не размещает ордера и не обещает результатов. Он организует публичные рыночные данные для самостоятельного решения.'},
+  es:{label:'Producto',coreMeta:'Plataforma principal · roadmap',radarMeta:'Beta activa · Windows',eyebrow:'DepthLume Radar · Primer producto beta',title:'Vea el mercado como un campo, no como una lista.',description:'DepthLume Radar convierte datos públicos en vivo en una vista espacial de actividad y explica el mercado elegido mediante evidencia, riesgos y calidad de datos.',primary:'Unirse a la beta Radar',secondary:'Abrir mi cuenta',capabilityTitle:'Inteligencia Radar, de la visión a la evidencia.',workflowTitle:'Un flujo enfocado para investigar mercados en vivo.',boundaryTitle:'Análisis sin ejecución de operaciones.',boundaryText:'Radar no conecta cuentas de trading, no coloca órdenes ni promete resultados. Organiza evidencia pública para una decisión independiente.'},
+  'pt-BR':{label:'Produto',coreMeta:'Plataforma principal · roadmap',radarMeta:'Beta ativo · Windows',eyebrow:'DepthLume Radar · Primeiro produto beta',title:'Veja o mercado como um campo, não como uma lista.',description:'DepthLume Radar transforma dados públicos ao vivo em uma visão espacial da atividade e explica o mercado escolhido por evidências, riscos e qualidade dos dados.',primary:'Participar do beta Radar',secondary:'Abrir minha conta',capabilityTitle:'Inteligência Radar, da visão às evidências.',workflowTitle:'Um fluxo focado para pesquisa de mercado ao vivo.',boundaryTitle:'Análise sem execução de ordens.',boundaryText:'Radar não conecta contas de negociação, não envia ordens e não promete resultados. Ele organiza evidências públicas para uma decisão independente.'},
+  de:{label:'Produkt',coreMeta:'Kernplattform · Roadmap',radarMeta:'Aktive Beta · Windows',eyebrow:'DepthLume Radar · Erstes Beta-Produkt',title:'Sehen Sie den Markt als Feld, nicht als Liste.',description:'DepthLume Radar verwandelt öffentliche Live-Daten in eine räumliche Aktivitätsübersicht und erklärt den gewählten Markt anhand von Evidenz, Risiken und Datenqualität.',primary:'Radar-Beta beitreten',secondary:'Mein Konto öffnen',capabilityTitle:'Radar-Intelligence: vom Überblick zur Evidenz.',workflowTitle:'Ein fokussierter Ablauf für Live-Marktforschung.',boundaryTitle:'Analyse ohne Handelsausführung.',boundaryText:'Radar verbindet kein Handelskonto, platziert keine Orders und verspricht keine Ergebnisse. Es ordnet öffentliche Evidenz für eine unabhängige Entscheidung.'},
+  tr:{label:'Ürün',coreMeta:'Ana platform · yol haritası',radarMeta:'Aktif beta · Windows',eyebrow:'DepthLume Radar · İlk beta ürünü',title:'Piyasayı liste değil, bir alan olarak görün.',description:'DepthLume Radar canlı halka açık verileri mekânsal bir etkinlik görünümüne dönüştürür; seçilen piyasayı kanıtlar, riskler ve veri kalitesiyle açıklar.',primary:'Radar betaya katıl',secondary:'Hesabımı aç',capabilityTitle:'Genel görünümden kanıta Radar zekâsı.',workflowTitle:'Canlı piyasa araştırması için odaklı akış.',boundaryTitle:'İşlem yürütmeden analitik.',boundaryText:'Radar işlem hesabına bağlanmaz, emir vermez ve sonuç vaat etmez. Bağımsız karar için halka açık piyasa kanıtlarını düzenler.'},
+  'zh-CN':{label:'产品',coreMeta:'核心平台 · 路线图',radarMeta:'测试中 · Windows',eyebrow:'DepthLume Radar · 首个测试产品',title:'把市场看作一个场，而不是列表。',description:'DepthLume Radar 将实时公开市场数据转化为空间活动视图，并通过证据、风险和数据质量解释所选市场。',primary:'加入 Radar 测试',secondary:'打开我的账户',capabilityTitle:'从全景到证据的 Radar 智能。',workflowTitle:'专注的实时市场研究流程。',boundaryTitle:'不执行交易的分析工具。',boundaryText:'Radar 不连接交易账户、不下单，也不承诺结果。它整理公开市场证据，帮助用户独立决策。'},
+};
+const c = productCopy[locale];
+---
+<BaseLayout title="DepthLume Radar" description={c.description} {path} {locale}>
+  <section class="radar-product-rail" aria-label={c.label}>
+    <div class="container radar-product-rail__inner">
+      <span>{c.label}</span>
+      <a href={home}><strong>DepthLume</strong><small>{c.coreMeta}</small></a>
+      <a class="active" href={path} aria-current="page"><strong>DepthLume Radar</strong><small>{c.radarMeta}</small></a>
+    </div>
+  </section>
+
+  <section class="radar-product-hero">
+    <div class="container radar-product-hero__grid">
+      <div class="radar-product-copy">
+        <span class="eyebrow">{c.eyebrow}</span>
+        <h1>{c.title}</h1>
+        <p>{c.description}</p>
+        <div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href="/account/">{c.secondary}</Button></div>
+        <small>✓ {t.home.hero[5]}</small>
+      </div>
+      <figure class="radar-hero-visual">
+        <div class="radar-hero-visual__bar" aria-hidden="true">
+          <span><i></i> DEPTHLUME RADAR / VISUAL FIELD</span>
+          <span><i></i> LIVE PRODUCT</span>
+        </div>
+        <img src="/images/product/depthlume-radar-live-2026-08.png" width="2545" height="1317" alt="DepthLume Radar visual radar and market intelligence interface" decoding="async" fetchpriority="high" />
+        <figcaption>{t.home.realCaption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <RadarLiveVisual {locale} />
+
+  <section class="section section--line radar-capabilities" id="radar-capabilities">
+    <div class="container"><SectionHeading eyebrow={t.home.sections[3][0]} title={c.capabilityTitle} description={t.home.featureDescriptions[6]} /><div class="radar-capability-grid">{selectedFeatures.map((item,index) => <article><span class="mono">0{index+1}</span><h3>{item.name}</h3><p>{item.text}</p></article>)}</div></div>
+  </section>
+
+  <section class="section section--line radar-workflow">
+    <div class="container radar-workflow__grid"><SectionHeading eyebrow={t.home.sections[5][0]} title={c.workflowTitle} /><ol>{t.home.steps.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
+  </section>
+
+  <section class="section section--line radar-boundary">
+    <div class="container radar-boundary__inner"><div><span class="eyebrow">Product boundary</span><h2>{c.boundaryTitle}</h2></div><p>{c.boundaryText}</p></div>
+  </section>
+
+  <section class="section section--line radar-product-cta"><div class="container"><span class="eyebrow">DepthLume Radar · Closed beta</span><h2>{t.home.sections[7][1]}</h2><div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href={localizedPath(locale,'documentation')}>{t.nav[5]}</Button></div></div></section>
+</BaseLayout>
+
+<style>
+  .radar-product-rail{border-bottom:1px solid var(--color-line);background:rgba(7,17,25,.58)}
+  .radar-product-rail__inner{display:flex;min-height:4.2rem;align-items:stretch;gap:.55rem}
+  .radar-product-rail__inner>span{display:flex;align-items:center;padding-right:1rem;color:var(--color-text-muted);font:600 .64rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+  .radar-product-rail a{display:flex;min-width:12rem;flex-direction:column;justify-content:center;padding:.7rem 1rem;border-inline:1px solid transparent;color:var(--color-text-soft)}
+  .radar-product-rail a small{margin-top:.25rem;color:var(--color-text-muted);font:.58rem var(--font-mono)}
+  .radar-product-rail a.active{border-color:var(--color-line);background:linear-gradient(180deg,rgba(96,221,235,.09),rgba(96,221,235,.025));color:var(--color-cyan);box-shadow:inset 0 -2px 0 var(--color-cyan)}
+  .radar-product-hero{padding:clamp(3.5rem,7vw,6rem) 0 2rem}
+  .radar-product-hero__grid{display:grid;grid-template-columns:minmax(20rem,.72fr) minmax(36rem,1.28fr);gap:clamp(2.5rem,5vw,5rem);align-items:center}
+  .radar-product-copy h1{max-width:11ch;margin-top:1rem}.radar-product-copy>p{max-width:38rem;margin-top:1.2rem;font-size:var(--step-1)}.radar-product-copy .portal-actions{margin:1.7rem 0 1rem}.radar-product-copy small{color:var(--color-text-muted)}
+  .radar-hero-visual{min-width:0;margin:0;border:1px solid rgba(104,211,232,.28);border-radius:.9rem;background:#07121c;box-shadow:0 34px 80px rgba(0,0,0,.42),0 0 55px rgba(50,194,220,.08);overflow:hidden;transform:perspective(1400px) rotateX(1deg);transform-origin:center bottom}
+  .radar-hero-visual__bar{display:flex;min-height:2.6rem;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .85rem;border-bottom:1px solid rgba(104,211,232,.17);color:var(--color-text-muted);font:600 .58rem var(--font-mono);letter-spacing:.07em}
+  .radar-hero-visual__bar span{display:flex;align-items:center;gap:.45rem}.radar-hero-visual__bar i{display:block;width:.38rem;aspect-ratio:1;border-radius:50%;background:var(--color-cyan);box-shadow:0 0 9px rgba(96,221,235,.68)}
+  .radar-hero-visual img{display:block;width:100%;height:auto;background:#0a1420}.radar-hero-visual figcaption{padding:.65rem .85rem;color:var(--color-text-muted);font-size:.62rem}
+  .radar-capability-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--color-line);border-left:1px solid var(--color-line)}
+  .radar-capability-grid article{min-height:13rem;padding:1.35rem;border-right:1px solid var(--color-line);border-bottom:1px solid var(--color-line);background:rgba(10,21,30,.4)}
+  .radar-capability-grid span{color:var(--color-cyan);font-size:.62rem}.radar-capability-grid h3{margin:2.2rem 0 .55rem;font-size:1rem}.radar-capability-grid p{font-size:.82rem}
+  .radar-workflow{background:rgba(8,18,26,.35)}.radar-workflow__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(3rem,8vw,8rem)}.radar-workflow ol{list-style:none;border-top:1px solid var(--color-line)}.radar-workflow li{display:grid;grid-template-columns:3rem 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--color-line)}.radar-workflow li>span{color:var(--color-cyan);font-size:.65rem}.radar-workflow li p{font-size:.8rem}
+  .radar-boundary__inner{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(3rem,8vw,8rem);align-items:end}.radar-boundary h2{max-width:16ch;margin-top:.8rem}.radar-boundary p{font-size:var(--step-1)}
+  .radar-product-cta{text-align:center}.radar-product-cta h2{max-width:26ch;margin:1rem auto 1.5rem}.radar-product-cta .portal-actions{justify-content:center}
+  @media(max-width:980px){.radar-product-hero__grid,.radar-workflow__grid,.radar-boundary__inner{grid-template-columns:minmax(0,1fr)}.radar-product-hero__grid>*{min-width:0}.radar-hero-visual{transform:none}.radar-capability-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.radar-product-rail__inner{overflow:auto}.radar-product-rail__inner>span{display:none}.radar-product-rail a{min-width:11rem}.radar-capability-grid{grid-template-columns:1fr}.radar-capability-grid article{min-height:auto}.radar-product-copy .button{flex:1 1 10rem}}
+</style>

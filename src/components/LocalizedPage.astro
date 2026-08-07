@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from './Button.astro';
 import ProductWorkspace from './ProductWorkspace.astro';
 import ProductShowcase from './ProductShowcase.astro';
+import RadarLiveVisual from './RadarLiveVisual.astro';
 import SectionHeading from './SectionHeading.astro';
 import FAQ from './FAQ.astro';
 import { featureNames, getTranslation } from '../i18n/translations';
@@ -12,14 +13,29 @@ const { locale, page } = Astro.props;
 const t = getTranslation(locale);
 const meta = t.meta[page];
 const path = localizedPath(locale, page);
+const radarPath = '/' + (localeConfig[locale].prefix ? localeConfig[locale].prefix + '/' : '') + 'radar/';
 const schema = page === '' ? { '@context':'https://schema.org','@type':'SoftwareApplication',name:'DepthLume',applicationCategory:'FinanceApplication',operatingSystem:'Windows',description:meta.description,url:new URL(path,'https://depthlume.com').toString() } : null;
 const featureItems = featureNames.map((name,index) => ({ name, text:t.home.featureDescriptions[index] }));
+const productCopy: Record<Locale, { label:string; current:string; future:string; soon:string }> = {
+  en:{label:'Product',current:'DepthLume Radar',future:'DepthLume',soon:'Coming after Radar beta'},
+  uk:{label:'Продукт',current:'DepthLume Radar',future:'DepthLume',soon:'З’явиться після beta-тестів Radar'},
+  ru:{label:'Продукт',current:'DepthLume Radar',future:'DepthLume',soon:'Появится после beta-тестов Radar'},
+  es:{label:'Producto',current:'DepthLume Radar',future:'DepthLume',soon:'Disponible después de la beta de Radar'},
+  'pt-BR':{label:'Produto',current:'DepthLume Radar',future:'DepthLume',soon:'Disponível após o beta do Radar'},
+  de:{label:'Produkt',current:'DepthLume Radar',future:'DepthLume',soon:'Verfügbar nach der Radar-Beta'},
+  tr:{label:'Ürün',current:'DepthLume Radar',future:'DepthLume',soon:'Radar beta sonrasında gelecek'},
+  'zh-CN':{label:'产品',current:'DepthLume Radar',future:'DepthLume',soon:'Radar 测试后推出'},
+};
+const products = productCopy[locale];
 ---
 <BaseLayout title={meta.title} description={meta.description} {path} {locale}>
   {schema && <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(schema)}></script>}
   {page === '' ? (
     <>
+      <section class="product-rail" aria-label={products.label}><div class="container product-rail__inner"><span class="product-rail__label">{products.label}</span><a class="product-rail__item" href={radarPath}><span>{products.current}</span><small>Beta · Windows</small></a><a class="product-rail__item product-rail__item--active" href={path} aria-current="page"><span>{products.future}</span><small>{products.soon}</small></a></div></section>
       <section class="localized-hero"><div class="container localized-hero-grid"><div class="localized-copy"><span class="eyebrow">{t.home.hero[0]}</span><h1>{t.home.hero[1]}</h1><p>{t.home.hero[2]}</p><div class="localized-actions"><Button href="#market-understanding" variant="primary">{t.home.hero[3]}</Button><Button href={localizedPath(locale,'closed-beta')}>{t.home.hero[4]}</Button></div><small>✓ {t.home.hero[5]}</small></div><ProductWorkspace caption={t.home.realCaption} alt={t.home.realAlt} ui={[t.home.sections[4][0],t.home.sections[4][1],'',featureNames[6],t.home.sections[4][1]]} /></div></section>
+
+      <RadarLiveVisual {locale} />
 
       <section id="market-understanding" class="section section--line"><div class="container editorial"><SectionHeading eyebrow={t.home.sections[0][0]} title={t.home.sections[0][1]} description={t.home.featureDescriptions[6]} /><div class="evidence-compact">{featureItems.slice(0,6).map((item,index) => <article><span class="mono">0{index+1}</span><div><h3>{item.name}</h3><p>{item.text}</p></div></article>)}</div></div></section>
 
@@ -52,6 +68,13 @@ const featureItems = featureNames.map((name,index) => ({ name, text:t.home.featu
 </BaseLayout>
 
 <style>
+  .product-rail { border-bottom:1px solid var(--color-line); background:rgba(7,17,25,.58); }
+  .product-rail__inner { display:flex; min-height:4.2rem; align-items:stretch; gap:.55rem; }
+  .product-rail__label { display:flex; align-items:center; padding-right:1rem; color:var(--color-text-muted); font:600 .64rem var(--font-mono); letter-spacing:.1em; text-transform:uppercase; }
+  .product-rail__item { display:flex; min-width:12rem; flex-direction:column; justify-content:center; padding:.7rem 1rem; border-inline:1px solid transparent; color:var(--color-text-soft); }
+  .product-rail__item span { font-size:.84rem; font-weight:650; }
+  .product-rail__item small { margin-top:.25rem; color:var(--color-text-muted); font:.58rem var(--font-mono); }
+  .product-rail__item--active { border-color:var(--color-line); background:linear-gradient(180deg,rgba(96,221,235,.09),rgba(96,221,235,.025)); color:var(--color-cyan); box-shadow:inset 0 -2px 0 var(--color-cyan); }
   .localized-hero { padding: clamp(3.5rem,7vw,6rem) 0 2rem; }
   .localized-hero-grid { display:grid; grid-template-columns:minmax(20rem,.72fr) minmax(36rem,1.28fr); gap:clamp(2.5rem,5vw,5rem); align-items:center; }
   .localized-copy h1 { max-width: 10ch; margin-top:1rem; }
@@ -89,6 +112,6 @@ const featureItems = featureNames.map((name,index) => ({ name, text:t.home.featu
   .localized-risk strong { color:var(--color-amber); } .localized-risk p { font-size:.78rem; }
   .legal-local { margin-top:2rem; padding:1rem; border-left:2px solid var(--color-amber); color:var(--color-amber); }
   .locale-note { margin-top:3rem; color:var(--color-text-muted); font-size:.65rem; }
-  @media(max-width:980px){.localized-hero-grid,.editorial,.faq-local{grid-template-columns:1fr}.localized-features{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:680px){.decision-strip,.scenario-local{grid-template-columns:1fr}.decision-strip article+article,.scenario-local article+article{border-left:0;border-top:1px solid var(--color-line)}.windows-local{align-items:flex-start;flex-direction:column}.localized-features{grid-template-columns:1fr}.localized-features article{min-height:auto}}
+  @media(max-width:980px){.localized-hero-grid,.editorial,.faq-local{grid-template-columns:minmax(0,1fr)}.localized-hero-grid>*{min-width:0}.localized-copy{max-width:100%;overflow:hidden}.localized-copy p{overflow-wrap:anywhere}.localized-features{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.product-rail__inner{max-width:100%;overflow:auto}.product-rail__label{display:none}.product-rail__item{min-width:11rem}.localized-actions .button{flex:1 1 9rem}.decision-strip,.scenario-local{grid-template-columns:1fr}.decision-strip article+article,.scenario-local article+article{border-left:0;border-top:1px solid var(--color-line)}.windows-local{align-items:flex-start;flex-direction:column}.localized-features{grid-template-columns:1fr}.localized-features article{min-height:auto}}
 </style>

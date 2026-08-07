@@ -1,0 +1,115 @@
+---
+import type { Locale } from '../i18n/locales';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+
+const copy: Record<Locale, { eyebrow: string; title: string; description: string; chips: string[]; caption: string }> = {
+  en: { eyebrow: 'DepthLume Radar · Live product', title: 'From market overview to focused intelligence.', description: 'The current Radar workspace groups live markets by state, exposes the selected asset’s score and explains the evidence, risks and data sources behind it.', chips: ['Visual radar', 'Explainable score', 'Multi-exchange data'], caption: 'Current DepthLume Radar beta interface. Product data and layout may evolve during testing.' },
+  uk: { eyebrow: 'DepthLume Radar · Живий продукт', title: 'Від огляду ринку до сфокусованої аналітики.', description: 'Актуальний Radar-графік групує живі ринки за станом, показує оцінку вибраного активу та пояснює докази, ризики й джерела даних.', chips: ['Візуальний радар', 'Пояснювана оцінка', 'Дані кількох бірж'], caption: 'Поточний beta-інтерфейс DepthLume Radar. Дані та компонування можуть змінюватися під час тестування.' },
+  ru: { eyebrow: 'DepthLume Radar · Живой продукт', title: 'От обзора рынка к сфокусированной аналитике.', description: 'Актуальный Radar группирует живые рынки по состоянию, показывает оценку выбранного актива и объясняет доказательства, риски и источники данных.', chips: ['Визуальный радар', 'Объяснимая оценка', 'Данные нескольких бирж'], caption: 'Текущий beta-интерфейс DepthLume Radar. Данные и компоновка могут меняться во время тестирования.' },
+  es: { eyebrow: 'DepthLume Radar · Producto real', title: 'De la visión del mercado a la inteligencia enfocada.', description: 'El Radar actual agrupa mercados en vivo por estado, muestra la puntuación del activo elegido y explica evidencia, riesgos y fuentes de datos.', chips: ['Radar visual', 'Puntuación explicable', 'Datos multi-exchange'], caption: 'Interfaz beta actual de DepthLume Radar. Los datos y el diseño pueden evolucionar durante las pruebas.' },
+  'pt-BR': { eyebrow: 'DepthLume Radar · Produto real', title: 'Da visão do mercado à inteligência focada.', description: 'O Radar atual agrupa mercados ao vivo por estado, mostra a pontuação do ativo escolhido e explica evidências, riscos e fontes de dados.', chips: ['Radar visual', 'Pontuação explicável', 'Dados multi-exchange'], caption: 'Interface beta atual do DepthLume Radar. Os dados e o layout podem evoluir durante os testes.' },
+  de: { eyebrow: 'DepthLume Radar · Live-Produkt', title: 'Vom Marktüberblick zur fokussierten Analyse.', description: 'Der aktuelle Radar gruppiert Live-Märkte nach Status, zeigt die Bewertung des gewählten Assets und erklärt Evidenz, Risiken und Datenquellen.', chips: ['Visuelles Radar', 'Erklärbare Bewertung', 'Multi-Exchange-Daten'], caption: 'Aktuelle Beta-Oberfläche von DepthLume Radar. Daten und Layout können sich während des Tests ändern.' },
+  tr: { eyebrow: 'DepthLume Radar · Canlı ürün', title: 'Piyasa görünümünden odaklı analize.', description: 'Güncel Radar canlı piyasaları duruma göre gruplar, seçilen varlığın puanını gösterir ve kanıtları, riskleri ve veri kaynaklarını açıklar.', chips: ['Görsel radar', 'Açıklanabilir puan', 'Çoklu borsa verisi'], caption: 'Güncel DepthLume Radar beta arayüzü. Veriler ve düzen test sürecinde değişebilir.' },
+  'zh-CN': { eyebrow: 'DepthLume Radar · 实际产品', title: '从市场全景到聚焦分析。', description: '当前 Radar 按状态组织实时市场，展示所选资产评分，并解释证据、风险与数据来源。', chips: ['可视化雷达', '可解释评分', '多交易所数据'], caption: '当前 DepthLume Radar 测试版界面。数据与布局可能在测试期间调整。' },
+};
+const t = copy[locale];
+const slideLabels: Record<Locale, string[]> = {
+  en: ['Visual radar', 'Market list', 'Live events'],
+  uk: ['Візуальний радар', 'Список ринків', 'Живі події'],
+  ru: ['Визуальный радар', 'Список рынков', 'Живые события'],
+  es: ['Radar visual', 'Lista de mercados', 'Eventos en vivo'],
+  'pt-BR': ['Radar visual', 'Lista de mercados', 'Eventos ao vivo'],
+  de: ['Visuelles Radar', 'Marktliste', 'Live-Ereignisse'],
+  tr: ['Görsel radar', 'Piyasa listesi', 'Canlı olaylar'],
+  'zh-CN': ['可视化雷达', '市场列表', '实时事件'],
+};
+const slideImages = [
+  { src: '/images/product/depthlume-radar-live-2026-08.png', width: 2545, height: 1317 },
+  { src: '/images/product/depthlume-radar-market-list.png', width: 1882, height: 1327 },
+  { src: '/images/product/depthlume-radar-live-events.png', width: 1869, height: 1056 },
+];
+const slides = slideImages.map((image, index) => ({ ...image, label: slideLabels[locale][index] }));
+---
+<section class="radar-live section section--line" id="radar-live-interface">
+  <div class="container radar-live__intro">
+    <div>
+      <span class="eyebrow">{t.eyebrow}</span>
+      <h2>{t.title}</h2>
+    </div>
+    <div>
+      <p>{t.description}</p>
+      <ul>{t.chips.map((chip) => <li><span aria-hidden="true"></span>{chip}</li>)}</ul>
+    </div>
+  </div>
+  <div class="container radar-live__stage">
+    <figure class="radar-monitor" data-radar-gallery tabindex="0">
+      <div class="radar-monitor__bar" aria-hidden="true">
+        <span class="radar-monitor__brand"><i></i> DEPTHLUME / RADAR FIELD</span>
+        <span class="radar-monitor__status"><i></i> LIVE WORKSPACE</span>
+      </div>
+      <div class="radar-monitor__screen">
+        {slides.map((slide, index) => (
+          <a class="radar-gallery__slide" href={slide.src} target="_blank" rel="noreferrer" data-radar-slide data-label={slide.label} hidden={index !== 0}>
+            <img src={slide.src} width={slide.width} height={slide.height} alt={`DepthLume Radar — ${slide.label}`} loading="lazy" decoding="async" />
+          </a>
+        ))}
+        <button class="radar-gallery__arrow radar-gallery__arrow--previous" type="button" aria-label="Previous screenshot" data-radar-previous>
+          <span aria-hidden="true">←</span>
+        </button>
+        <button class="radar-gallery__arrow radar-gallery__arrow--next" type="button" aria-label="Next screenshot" data-radar-next>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+      <figcaption><strong data-radar-caption>{slides[0].label}</strong><span>{t.caption}</span><span class="radar-gallery__counter" data-radar-counter>1 / {slides.length}</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .radar-live { position:relative; overflow:hidden; background:linear-gradient(180deg,rgba(6,15,22,.2),rgba(8,22,31,.66) 48%,rgba(5,12,18,.2)); }
+  .radar-live::before { position:absolute; width:52rem; height:28rem; left:50%; bottom:1rem; border-radius:50%; background:rgba(65,207,231,.08); filter:blur(85px); content:''; transform:translateX(-50%); pointer-events:none; }
+  .radar-live__intro { display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(2rem,7vw,7rem); align-items:end; margin-bottom:2.3rem; }
+  .radar-live__intro h2 { max-width:15ch; margin-top:.9rem; }
+  .radar-live__intro p { max-width:43rem; font-size:var(--step-1); }
+  .radar-live__intro ul { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.2rem; list-style:none; }
+  .radar-live__intro li { display:flex; align-items:center; gap:.45rem; padding:.5rem .65rem; border:1px solid var(--color-line); border-radius:999px; color:var(--color-text-soft); background:rgba(10,25,34,.68); font:.68rem var(--font-mono); }
+  .radar-live__intro li span { width:.35rem; aspect-ratio:1; border-radius:50%; background:var(--color-cyan); box-shadow:0 0 10px rgba(96,221,235,.6); }
+  .radar-live__stage { position:relative; }
+  .radar-monitor { position:relative; z-index:1; margin:0; border:1px solid rgba(104,211,232,.3); border-radius:1rem; background:#07121c; box-shadow:0 45px 90px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.025) inset,0 0 60px rgba(50,194,220,.08); outline:none; }
+  .radar-monitor:focus-visible{box-shadow:0 45px 90px rgba(0,0,0,.48),0 0 0 2px var(--color-cyan),0 0 60px rgba(50,194,220,.12)}
+  .radar-monitor::after { position:absolute; inset:auto 8% -1.8rem; height:1.8rem; border-radius:50%; background:rgba(0,0,0,.6); filter:blur(18px); content:''; z-index:-1; }
+  .radar-monitor__bar { display:flex; min-height:3rem; align-items:center; justify-content:space-between; gap:1rem; padding:.7rem 1rem; border-bottom:1px solid rgba(104,211,232,.18); color:var(--color-text-muted); font:600 .62rem var(--font-mono); letter-spacing:.08em; }
+  .radar-monitor__brand,.radar-monitor__status { display:flex; align-items:center; gap:.5rem; }
+  .radar-monitor__brand i { width:.7rem; height:.7rem; border:2px solid var(--color-cyan); border-radius:50%; box-shadow:0 0 12px rgba(96,221,235,.45); }
+  .radar-monitor__status i { width:.38rem; height:.38rem; border-radius:50%; background:var(--color-green); box-shadow:0 0 9px rgba(82,201,139,.7); }
+  .radar-monitor__screen { position:relative; overflow:hidden; margin:.65rem; border:1px solid rgba(104,211,232,.17); border-radius:.55rem; background:#0a1420; }
+  .radar-gallery__slide{display:block;color:inherit;background:#0a1420}.radar-gallery__slide[hidden]{display:none}.radar-gallery__slide img { display:block; width:100%; height:auto; image-rendering:auto; }
+  .radar-gallery__arrow{position:absolute;z-index:2;top:50%;display:grid;width:3rem;aspect-ratio:1;place-items:center;border:1px solid rgba(112,220,238,.42);border-radius:50%;background:rgba(4,14,22,.88);color:#eefaff;box-shadow:0 8px 28px rgba(0,0,0,.42);cursor:pointer;transform:translateY(-50%);transition:border-color .2s ease,background .2s ease,transform .2s ease}.radar-gallery__arrow:hover,.radar-gallery__arrow:focus-visible{border-color:var(--color-cyan);background:rgba(20,57,69,.96);outline:none;transform:translateY(-50%) scale(1.05)}.radar-gallery__arrow--previous{left:1rem}.radar-gallery__arrow--next{right:1rem}.radar-gallery__arrow span{font-size:1.35rem;line-height:1}
+  .radar-monitor figcaption { display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;padding:.35rem 1rem 1rem;color:var(--color-text-muted);font-size:.7rem; }.radar-monitor figcaption strong{color:var(--color-text-soft);font:600 .66rem var(--font-mono);white-space:nowrap}.radar-gallery__counter{color:var(--color-cyan);font:600 .65rem var(--font-mono);white-space:nowrap}
+  @media(max-width:800px){.radar-live__intro{grid-template-columns:1fr}.radar-monitor__status{display:none}.radar-monitor__screen{margin:.35rem}.radar-gallery__arrow{width:2.5rem}.radar-gallery__arrow--previous{left:.55rem}.radar-gallery__arrow--next{right:.55rem}.radar-monitor figcaption{grid-template-columns:1fr auto;font-size:.62rem}.radar-monitor figcaption>span:not(.radar-gallery__counter){display:none}}
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-radar-gallery]').forEach((gallery) => {
+    const slides = Array.from(gallery.querySelectorAll<HTMLElement>('[data-radar-slide]'));
+    const caption = gallery.querySelector<HTMLElement>('[data-radar-caption]');
+    const counter = gallery.querySelector<HTMLElement>('[data-radar-counter]');
+    let active = 0;
+
+    const show = (next: number) => {
+      active = (next + slides.length) % slides.length;
+      slides.forEach((slide, index) => { slide.hidden = index !== active; });
+      if (caption) caption.textContent = slides[active].dataset.label ?? '';
+      if (counter) counter.textContent = `${active + 1} / ${slides.length}`;
+    };
+
+    gallery.querySelector('[data-radar-previous]')?.addEventListener('click', () => show(active - 1));
+    gallery.querySelector('[data-radar-next]')?.addEventListener('click', () => show(active + 1));
+    gallery.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); show(active - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); show(active + 1); }
+    });
+  });
+</script>

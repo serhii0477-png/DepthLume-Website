@@ -1,10 +1,10 @@
 export const site = {
   name: 'DepthLume',
-  version: 'Website 1.0b · Iteration 1',
+  version: 'Website 1.0b · Beta Access Portal',
   url: 'https://depthlume.com',
   locale: 'en',
   contactPlaceholder: '[contact email to be confirmed]',
-  productStatus: 'Closed beta',
+  productStatus: 'Closed beta · 10 seats',
   description:
     'Professional Windows desktop market intelligence for cryptocurrency futures research.',
   legalReviewRequired: true,

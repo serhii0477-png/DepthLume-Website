@@ -1,0 +1,5 @@
+---
+import PortalPage from '../components/PortalPage.astro';
+---
+<PortalPage title="Реєстрація" description="Створіть акаунт, підтвердьте email і подайте заявку на beta-тест."><form class="portal-form" data-json-form action="/api/auth/register"><label>Ім’я<input name="name" autocomplete="name" minlength="2" maxlength="80" required /></label><label>Email<input name="email" type="email" autocomplete="email" required /></label><label>Пароль<input name="password" type="password" autocomplete="new-password" minlength="12" required /><small>Щонайменше 12 символів, літери та цифри.</small></label><button class="button button--primary" type="submit">Створити акаунт</button><p class="form-status" aria-live="polite"></p><div class="form-links"><a href="/login/">Уже маєте акаунт?</a></div></form></PortalPage>
+<script is:inline src="/scripts/forms.js"></script>

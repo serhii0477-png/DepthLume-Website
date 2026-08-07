@@ -3,17 +3,22 @@ import { localeConfig, locales, localizedPath, pageFromPath, type Locale } from 
 interface Props { locale: Locale; pathname: string; mobile?: boolean; }
 const { locale, pathname, mobile = false } = Astro.props;
 const page = pageFromPath(pathname);
+const isRadarProduct = /^\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?radar(?:\/|$)/i.test(pathname);
+const isPortal = /^\/(account|admin|apply|login|register|forgot-password|reset-password|verify-email|beta-terms)(\/|$)/.test(pathname);
+const choiceHref = (item: Locale) => isRadarProduct
+  ? '/' + (localeConfig[item].prefix ? localeConfig[item].prefix + '/' : '') + 'radar/'
+  : isPortal ? pathname : localizedPath(item, page);
 ---
 {mobile ? (
   <div class="mobile-language">
     <span>{localeConfig[locale].selectLabel}</span>
-    <div>{locales.map((item) => <a class:list={[item === locale && 'current']} href={localizedPath(item, page)} lang={localeConfig[item].htmlLang} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}</div>
+    <div>{locales.map((item) => <a class:list={[item === locale && 'current']} href={choiceHref(item)} lang={localeConfig[item].htmlLang} data-locale-choice={item} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}</div>
   </div>
 ) : (
   <details class="language-menu" data-language-menu>
-    <summary aria-label={localeConfig[locale].selectLabel}><span class="globe" aria-hidden="true">◎</span><span>{localeConfig[locale].nativeName}</span><span aria-hidden="true">⌄</span></summary>
+    <summary aria-label={localeConfig[locale].selectLabel}><span class="globe" aria-hidden="true">◎</span><span data-language-current>{localeConfig[locale].nativeName}</span><span aria-hidden="true">⌄</span></summary>
     <div class="language-popup" role="list">
-      {locales.map((item) => <a role="listitem" class:list={[item === locale && 'current']} href={localizedPath(item, page)} lang={localeConfig[item].htmlLang} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}
+      {locales.map((item) => <a role="listitem" class:list={[item === locale && 'current']} href={choiceHref(item)} lang={localeConfig[item].htmlLang} data-locale-choice={item} aria-current={item === locale ? 'page' : undefined}>{localeConfig[item].nativeName}</a>)}
     </div>
   </details>
 )}

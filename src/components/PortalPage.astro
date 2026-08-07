@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+interface Props { title: string; description: string; eyebrow?: string; }
+const { title, description, eyebrow = 'DepthLume Radar' } = Astro.props;
+---
+<BaseLayout title={`${title} — DepthLume`} {description} path={Astro.url.pathname} locale="uk" noindex>
+  <section class="portal-section">
+    <div class="container portal-container">
+      <header class="portal-heading"><span class="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></header>
+      <slot />
+    </div>
+  </section>
+</BaseLayout>

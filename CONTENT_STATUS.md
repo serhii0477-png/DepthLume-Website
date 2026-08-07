@@ -1,97 +1,71 @@
-# DepthLume Content Status
+# DepthLume Website Content Status
 
-## Approved foundation copy
+Last updated: 2026-08-07.
 
-- Product name: **DepthLume**
-- Category label: **Windows Desktop Market Intelligence**
-- Hero heading: **See deeper into market behavior.**
-- Hero support copy: **DepthLume brings real-time order flow, market context and explainable scenario analysis into one professional Windows workspace.**
-- Primary CTA: **Explore the Platform**
-- Secondary CTA: **Join Closed Beta**
-- No trading-account connection is required.
-- DepthLume does not execute trades, manage user funds, provide financial advice or guarantee profitability.
-- Context strength is not a probability of profit.
+## Product model
 
-## Provisional product copy
+- **DepthLume Radar** is the first active beta product for Windows.
+- **DepthLume** is the future core product and is presented as the next roadmap stage.
+- Public visitors can switch products through the Product menu and the product rail.
+- Product selection changes the public page context: copy, hero interface, screenshots, features, workflow and CTA.
 
-- All feature-card descriptions.
-- Market Understanding and Decision Engine explanations.
-- Scenario Outcome Lab workflow and lifecycle labels.
-- Closed beta positioning and participation expectations.
-- Documentation page wording.
-- Supported-market and historical-data FAQ wording.
-- Update-delivery language.
+## DepthLume Radar public page
 
-## Required product screenshots
+Available at `/radar/` and localized equivalents such as `/uk/radar/`.
 
-- Hero terminal anchor: safe chart crop integrated.
-- Complete market workspace: not used because no safe full-workspace crop was possible.
-- Explainable Decision Snapshot.
-- DOM, Trade Tape and order-flow research.
-- Delta and CVD analysis.
-- Scenario Outcome Lab lifecycle.
-- Diagnostics and deterministic replay, if approved for public representation.
+Implemented content:
 
-Screenshots must contain approved, non-sensitive data and must not imply returns or unimplemented functionality.
+- Radar-specific hero title, description and beta actions.
+- Current real Radar interface in the first screen.
+- Radar capability cards and product workflow.
+- Clear product boundary: analytics only, no account connection, order placement, financial advice or outcome promise.
+- Three-image product gallery with previous/next buttons, keyboard navigation, counter and full-resolution links.
 
-## Source screenshot and safe derivatives
+Approved Radar screenshots:
 
-The current source set contains `11.png`, `12.png`, `13.png`, `14.png` and `Quantower.png`. Source files remain outside the public directory and are never referenced directly by website markup.
-
-Generated WebP derivatives; coordinates are `(left, top, right, bottom)`:
-
-- `depthlume-chart.webp` — `(1260, 165, 2250, 995)`, 990 × 830.
-- `depthlume-chart-640.webp` — responsive 640px chart derivative.
-- `depthlume-delta-cvd.webp` — `(1265, 995, 2250, 1348)`, 985 × 353.
-- `depthlume-heatmap.webp` — `(5, 1008, 1215, 1312)`, 1210 × 304.
-- `depthlume-market-context.webp` — `(1558, 84, 1921, 162)`, 363 × 78.
-- `depthlume-chart-clean.webp` — complete safe `11.png`, 1040 × 762.
-- `depthlume-watchlist.webp` — complete `13.png`, 860 × 362; real public-market Watchlist data.
-- `depthlume-depth-map.webp` — safe lower crop of `12.png`, `(0, 226, 858, 680)`, 858 × 454.
-
-Unsafe regions include the program title bar, upper-left Signal Journal table, score/outcome columns, confidence displays and obsolete product names. No full-workspace crop was produced because it could not preserve useful structure while safely excluding all journal material.
-
-`14.png` is intentionally excluded because its Signal Journal values could be misunderstood as product performance. The upper analytical text in `12.png`, including scenario score and confidence language, is also excluded. `Quantower.png` is a composition reference only and is never copied into public assets.
-
-The desktop application still requires replacement of the old product name wherever it remains in its own UI. This website iteration did not inspect or modify that repository.
-
-## Missing brand assets
-
-- Final DepthLume logo and wordmark.
-- Production favicon and application icons.
-- Approved Open Graph preview image.
-
-The current layered market-depth / illumination SVG mark and matching favicon are provisional.
-
-## Translation status
-
-| Locale | Routes | Status | Required review |
+| Asset | Source | Purpose | Resolution |
 | --- | --- | --- | --- |
-| English (`en`) | Complete | Source copy | Editorial and legal |
-| Ukrainian (`uk`) | Complete | Professional draft | Native speaker and legal |
-| Russian (`ru`) | Complete | Professional draft | Native speaker and legal |
-| Spanish (`es`) | Complete | Professional draft | Native speaker and legal |
-| Portuguese, Brazil (`pt-BR`) | Complete | Professional draft | Brazilian native speaker and legal |
-| German (`de`) | Complete | Professional draft | Native speaker and legal |
-| Turkish (`tr`) | Complete | Professional draft | Native speaker and legal |
-| Simplified Chinese (`zh-CN`) | Complete | Professional draft | Mainland Chinese native speaker and legal |
+| `depthlume-radar-live-2026-08.png` | screenshot 47 | Visual Radar and selected-market intelligence | 2545 × 1317 |
+| `depthlume-radar-market-list.png` | screenshot 50 | Market List | 1882 × 1327 |
+| `depthlume-radar-live-events.png` | screenshot 51 | Live Events | 1869 × 1056 |
 
-All marketing translations require native-speaker review for terminology, tone and line wrapping. Localized legal text is preliminary and must be reviewed against the final English legal source.
+The older `depthlume-radar-live.png` is retained as an earlier source asset but is no longer used by the live Radar page.
 
-## Missing operational information
+## DepthLume core platform content
 
-- Official contact email.
-- Closed beta intake and privacy process.
-- Confirmed Windows versions and hardware requirements.
-- Confirmed supported exchanges, markets and symbols.
-- Historical-data availability and depth.
-- Software update delivery method.
+The original localized marketing pages remain the future DepthLume platform presentation. Existing chart, order-flow, Delta/CVD, heatmap and workspace visuals belong to this future product context and must not be reused as Radar screenshots.
 
-## Legal review required
+Before DepthLume becomes active, confirm its final feature set, product screenshots, release status and CTA. The same product-page structure used for Radar can then be applied to DepthLume.
 
-- Privacy notice.
-- Terms of use and software license boundaries.
-- Risk disclaimer.
-- Closed beta participation terms.
-- Jurisdiction, company identity and official contact details.
-- Any future data collection, diagnostics, support and update disclosures.
+## Localization
+
+The site supports English, Ukrainian, Russian, Spanish, Brazilian Portuguese, German, Turkish and Simplified Chinese. Locale selection persists in the browser and is preserved when navigating between home, Radar and account pages.
+
+Translations are professional drafts and still require native-speaker and legal review. Product screenshots may contain Ukrainian or English application UI; they are authentic product captures and are not redrawn by the website.
+
+## Account and beta content
+
+- Registration, email verification, login, logout and password reset pages exist.
+- Authenticated visitors see account-aware header actions.
+- The account dashboard displays application status, beta access and current release.
+- Beta application, feedback, protected download and administrator release-management flows exist.
+- Beta limit is currently 10 active users.
+
+## Production email status
+
+Resend integration exists in code but production delivery is not complete until both Cloudflare secrets are configured:
+
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+
+`EMAIL_FROM` must use a sender domain verified in Resend. Real values must never be committed.
+
+## Review still required
+
+- Final company identity, official contact email and domain.
+- Final logo, favicon and Open Graph preview.
+- Legal review of privacy, terms, risk disclaimer and beta terms.
+- Native-speaker review for all translated marketing and legal copy.
+- Confirmed Windows requirements, supported exchanges and update policy.
+- Resend domain verification and production secret configuration.
+- End-to-end production tests for new-user email verification and password recovery.

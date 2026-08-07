@@ -16,6 +16,19 @@ const { title, description, path = '/', noindex = false, locale = 'en' } = Astro
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem('depthlume.locale');
+          const prefixes = { uk:'uk', ru:'ru', es:'es', 'pt-BR':'pt-br', de:'de', tr:'tr', 'zh-CN':'zh-cn' };
+          const publicPaths = new Set(['/','/radar/','/documentation/','/closed-beta/','/privacy/','/terms/','/risk-disclaimer/']);
+          const path = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
+          if (saved && saved !== 'en' && prefixes[saved] && publicPaths.has(path)) {
+            location.replace(`/${prefixes[saved]}${path}${location.search}${location.hash}`);
+          }
+        } catch {}
+      })();
+    </script>
     <SEO {title} {description} {path} {noindex} {locale} />
     <slot name="head" />
   </head>

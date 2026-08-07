@@ -1,0 +1,5 @@
+---
+import PortalPage from '../components/PortalPage.astro';
+---
+<PortalPage title="Вхід" description="Увійдіть до кабінету beta-тестувальника."><form class="portal-form" data-json-form action="/api/auth/login" data-success="/account/"><label>Email<input name="email" type="email" autocomplete="email" required /></label><label>Пароль<input name="password" type="password" autocomplete="current-password" required /></label><button class="button button--primary" type="submit">Увійти</button><p class="form-status" aria-live="polite"></p><div class="form-links"><a href="/forgot-password/">Забули пароль?</a><a href="/register/">Створити акаунт</a></div></form></PortalPage>
+<script is:inline src="/scripts/forms.js"></script>
