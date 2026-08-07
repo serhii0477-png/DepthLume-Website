@@ -2,6 +2,11 @@
 
 ## 2026-08-07 — Website checkpoint
 
+### Custom production domain
+
+- Set `https://depthlume.com` as the canonical `APP_URL` for email links and documented it as the public production origin.
+- Added `https://depthlume.com` to private R2 release-upload CORS while retaining the legacy `pages.dev` origin for safe transition.
+
 ### Secure large release delivery
 
 - Replaced the Pages Function binary-upload path with a short-lived, server-signed direct `PUT` upload to the private R2 bucket.

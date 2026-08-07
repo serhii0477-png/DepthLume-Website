@@ -2,7 +2,7 @@
   "rules": [
     {
       "allowed": {
-        "origins": ["https://depthlume-preview.pages.dev"],
+        "origins": ["https://depthlume.com", "https://depthlume-preview.pages.dev"],
         "methods": ["PUT"],
         "headers": ["content-type"]
       },

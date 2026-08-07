@@ -15,13 +15,13 @@ The existing beta account model remains the source of truth. An administrator mu
 
 - Local workspace: `E:\DepthLumeWebsite`
 - GitHub: <https://github.com/serhii0477-png/DepthLume-Website>
-- Public production site: <https://depthlume-preview.pages.dev>
-- Main Ukrainian page: <https://depthlume-preview.pages.dev/uk/>
-- Ukrainian DepthLume Radar page: <https://depthlume-preview.pages.dev/uk/radar/>
+- Public production site: <https://depthlume.com>
+- Main Ukrainian page: <https://depthlume.com/uk/>
+- Ukrainian DepthLume Radar page: <https://depthlume.com/uk/radar/>
 - Cloudflare Pages project: `depthlume-preview`
 - Production branch configured in Cloudflare: `main`
 
-Do not confuse `preview.depthlume-preview.pages.dev` or hash-prefixed deployment URLs with the public production address. Preview deployments are protected by Cloudflare Access; the stable `depthlume-preview.pages.dev` address is public.
+Do not confuse preview or hash-prefixed `pages.dev` deployment URLs with the public production address. Preview deployments are protected by Cloudflare Access; `https://depthlume.com` is the canonical public origin. The legacy stable `depthlume-preview.pages.dev` origin remains available for backward compatibility.
 
 ## 2. Current product architecture
 
@@ -122,7 +122,7 @@ The API endpoints are `POST /api/licenses/activate`, `/api/licenses/validate` an
 At `/admin/`, first grant a verified account beta access, then create its Radar license key. The raw key appears exactly once, so copy it before closing the message. Default device limit is one. Suspension/revocation invalidates current desktop sessions; device deactivation frees the slot. The desktop environment variable must point to the stable public Pages origin:
 
 ```powershell
-[Environment]::SetEnvironmentVariable("DEPTHLUME_LICENSE_API_URL", "https://depthlume-preview.pages.dev", "User")
+[Environment]::SetEnvironmentVariable("DEPTHLUME_LICENSE_API_URL", "https://depthlume.com", "User")
 ```
 
 Before the feature is deployed, run `npm run db:migrate:remote`; this applies `0003_licenses.sql`. Licensing uses the existing `DB` D1 binding and needs no extra Cloudflare secret or public R2 configuration.
@@ -134,9 +134,9 @@ Configured resources:
 - Pages project: `depthlume-preview`
 - D1 database: `depthlume-website`
 - R2 bucket: `depthlume-private-releases`
-- Production URL: `https://depthlume-preview.pages.dev`
+- Production URL: `https://depthlume.com`
 - `APP_ENV=production`
-- `APP_URL=https://depthlume-preview.pages.dev`
+- `APP_URL=https://depthlume.com`
 - `BETA_LIMIT=10`
 
 The production build is deployed manually with:
@@ -222,4 +222,4 @@ The build validates localized routes, internal links, SEO alternates and prohibi
 
 ## 11. Suggested prompt for a new ChatGPT conversation
 
-> Continue development of the DepthLume website from the repository https://github.com/serhii0477-png/DepthLume-Website. First read README.md, PROJECT_HANDOFF.md, CONTENT_STATUS.md and DESIGN_SYSTEM.md. The public production site is https://depthlume-preview.pages.dev. DepthLume Radar is the active beta product at /uk/radar/; DepthLume is the future core product. Preserve the multilingual architecture, the authentication/beta portal, D1/R2 security boundaries and the current product-specific screenshot rules. Never commit or request secret values. Run npm run test, npm run check and npm run build before deployment.
+> Continue development of the DepthLume website from the repository https://github.com/serhii0477-png/DepthLume-Website. First read README.md, PROJECT_HANDOFF.md, CONTENT_STATUS.md and DESIGN_SYSTEM.md. The public production site is https://depthlume.com. DepthLume Radar is the active beta product at /uk/radar/; DepthLume is the future core product. Preserve the multilingual architecture, the authentication/beta portal, D1/R2 security boundaries and the current product-specific screenshot rules. Never commit or request secret values. Run npm run test, npm run check and npm run build before deployment.

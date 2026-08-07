@@ -2,8 +2,8 @@
 
 Official multilingual marketing site and secure beta-access portal for **DepthLume Radar**, a Windows desktop market analytics and order-flow research platform.
 
-- Production: <https://depthlume-preview.pages.dev>
-- Ukrainian Radar page: <https://depthlume-preview.pages.dev/uk/radar/>
+- Production: <https://depthlume.com>
+- Ukrainian Radar page: <https://depthlume.com/uk/radar/>
 - Repository: <https://github.com/serhii0477-png/DepthLume-Website>
 - Full project handoff and continuation notes: [`PROJECT_HANDOFF.md`](PROJECT_HANDOFF.md)
 - Change history and the current checkpoint: [`CHANGELOG.md`](CHANGELOG.md)
@@ -113,7 +113,7 @@ Before the first production large upload, create an R2 S3 API token restricted t
 ```json
 [
   {
-    "AllowedOrigins": ["https://depthlume-preview.pages.dev"],
+    "AllowedOrigins": ["https://depthlume.com", "https://depthlume-preview.pages.dev"],
     "AllowedMethods": ["PUT"],
     "AllowedHeaders": ["Content-Type"],
     "ExposeHeaders": ["ETag"],
@@ -147,7 +147,7 @@ For the desktop build, set its `DEPTHLUME_LICENSE_API_URL` to the stable product
 ```powershell
 [Environment]::SetEnvironmentVariable(
   "DEPTHLUME_LICENSE_API_URL",
-  "https://depthlume-preview.pages.dev",
+  "https://depthlume.com",
   "User"
 )
 ```

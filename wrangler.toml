@@ -14,5 +14,5 @@ bucket_name = "depthlume-private-releases"
 
 [vars]
 APP_ENV = "production"
-APP_URL = "https://depthlume-preview.pages.dev"
+APP_URL = "https://depthlume.com"
 BETA_LIMIT = "10"
