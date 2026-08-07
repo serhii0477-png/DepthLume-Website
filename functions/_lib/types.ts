@@ -5,6 +5,9 @@ export interface Env {
   APP_URL?: string;
   BETA_LIMIT?: string;
   ADMIN_BOOTSTRAP_SECRET?: string;
+  R2_ACCOUNT_ID?: string;
+  R2_ACCESS_KEY_ID?: string;
+  R2_SECRET_ACCESS_KEY?: string;
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
 }
@@ -22,4 +25,3 @@ export interface SessionUser {
   betaGrantedAt: string | null;
   betaRevokedAt: string | null;
 }
-

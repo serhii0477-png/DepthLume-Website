@@ -6,16 +6,21 @@ Official multilingual marketing site and secure beta-access portal for **DepthLu
 - Ukrainian Radar page: <https://depthlume-preview.pages.dev/uk/radar/>
 - Repository: <https://github.com/serhii0477-png/DepthLume-Website>
 - Full project handoff and continuation notes: [`PROJECT_HANDOFF.md`](PROJECT_HANDOFF.md)
+- Change history and the current checkpoint: [`CHANGELOG.md`](CHANGELOG.md)
 
 ## Architecture
 
 - Astro 7 static marketing UI with the existing design system and eight locales.
 - Cloudflare Pages Functions for server APIs and private-route guards.
-- Cloudflare D1 for users, sessions, applications, releases, feedback and download audit logs.
+- Cloudflare D1 for users, sessions, applications, releases, desktop licenses, feedback and download audit logs.
 - Private Cloudflare R2 for release binaries and feedback attachments.
 - PBKDF2-SHA256 password hashing, hashed opaque sessions, HttpOnly cookies, role checks, Origin/CSRF checks, prepared SQL, validation and rate limiting.
 
 The public HTML remains static. Private data and files are returned only by authenticated Functions; hiding a frontend button is never treated as authorization.
+
+## Current checkpoint
+
+The direct private R2 release upload flow has been deployed and successfully used for a Radar release. Website-side licensing is implemented in this repository and has passed unit, type and production-build checks. Before issuing the first real desktop license, deploy the current commit and apply migration `0003_licenses.sql`; then verify activation with a newly created key. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
 
 ## Current product structure
 
@@ -56,6 +61,9 @@ Local D1 and R2 data persists under ignored `.wrangler/state`.
 | `APP_URL` | yes | Public origin used in email links |
 | `BETA_LIMIT` | yes | Maximum active beta users; default `10` |
 | `ADMIN_BOOTSTRAP_SECRET` | until first admin | One-time administrator creation secret |
+| `R2_ACCOUNT_ID` | large release uploads | Cloudflare account ID used only to construct a presigned R2 URL |
+| `R2_ACCESS_KEY_ID` | large release uploads | Bucket-scoped R2 S3 API token access key; set as a secret |
+| `R2_SECRET_ACCESS_KEY` | large release uploads | Bucket-scoped R2 S3 API token secret; set as a secret |
 | `RESEND_API_KEY` | production email | Optional verification/reset provider |
 | `EMAIL_FROM` | with Resend | Verified sender address |
 
@@ -72,6 +80,8 @@ npm run db:migrate:remote
 ```
 
 Configure Pages bindings `DB` (D1) and `RELEASES` (R2). Migration `migrations/0001_initial.sql` creates all tables and indexes and contains no password.
+
+The subsequent migrations are required in order: `0002_release_uploads.sql` for large release uploads and `0003_licenses.sql` for DepthLume Radar desktop licensing.
 
 ## Create the first administrator
 
@@ -96,13 +106,57 @@ After success, remove `ADMIN_BOOTSTRAP_SECRET` from production.
 
 ## Publish a new release
 
-Sign in as admin and upload EXE, MSI or ZIP at `/admin/`. Enter version, platform and release notes. Marking it active deactivates the previous release. Files never enter `public/` and have no public R2 URL. The Pages request limit means this implementation caps direct uploads at 95 MB.
+Sign in as admin and upload EXE, MSI or ZIP (up to **1 GiB**) at `/admin/`. Enter version, platform and release notes. The browser first receives a 15-minute presigned `PUT` authorization for one server-generated R2 object key, uploads directly to the private R2 bucket, then asks the backend to finalize. The backend confirms the object exists and its type and size match before it writes release metadata to D1. Marking a release active deactivates the previous active release. Files never enter `public/`, receive no permanent public URL, and beta downloads still stream only through `/api/download`.
+
+Before the first production large upload, create an R2 S3 API token restricted to **Object Read & Write** on `depthlume-private-releases`, then set `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` as Cloudflare Pages production secrets. Never expose these values in browser code or Git. Configure R2 bucket CORS to allow only the website origin and `PUT` with `Content-Type`, for example:
+
+```json
+[
+  {
+    "AllowedOrigins": ["https://depthlume-preview.pages.dev"],
+    "AllowedMethods": ["PUT"],
+    "AllowedHeaders": ["Content-Type"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-format file with `npx wrangler r2 bucket cors set depthlume-private-releases --file r2-release-cors.json`. Add the production custom-domain origin as an additional exact value if one is used. The bucket remains private.
 
 ## Email verification
 
 With `RESEND_API_KEY` and `EMAIL_FROM`, verification and reset links are emailed. In `development`, APIs also return test links. Without a provider, new production accounts remain unverified by design.
 
 Production Resend delivery is still pending. Configure both secrets in Cloudflare Pages only after verifying a sender domain in Resend; never put their real values in this repository.
+
+## Desktop licensing
+
+The website is the licensing authority; the Radar executable never receives Cloudflare, R2, admin or account-password credentials. The desktop app calls these HTTPS endpoints:
+
+- `POST /api/licenses/activate` — accepts a license key and one random installation ID, creates/reuses one device activation and returns a 24-hour opaque desktop token.
+- `POST /api/licenses/validate` — checks the desktop token, device and current beta/license state, then rotates the token.
+- `POST /api/licenses/deactivate` — revokes the token and frees that device slot.
+
+All desktop tokens and license keys are stored in D1 only as SHA-256 hashes. The raw activation key is displayed to an administrator only once when it is created. The API never exposes a public release binary URL and does not change the existing protected `/api/download` flow.
+
+To issue a key, first approve and grant **beta** access to the verified user. Then open `/admin/`, use **Radar licenses**, enter that user's email and choose a device limit (one by default). Copy the key immediately and give it to the user through a secure channel. Suspending or revoking a license blocks the next validation and revokes active desktop sessions.
+
+For the desktop build, set its `DEPTHLUME_LICENSE_API_URL` to the stable production Pages origin, for example:
+
+```powershell
+[Environment]::SetEnvironmentVariable(
+  "DEPTHLUME_LICENSE_API_URL",
+  "https://depthlume-preview.pages.dev",
+  "User"
+)
+```
+
+No new Pages binding or secret is needed for licensing: it uses the existing private `DB` binding. Apply the D1 migration before deploying code that uses these endpoints:
+
+```bash
+npm run db:migrate:remote
+```
 
 ## Verification
 
@@ -130,5 +184,5 @@ npx wrangler pages deploy dist --project-name=depthlume-preview --branch=main
 - Legal copy needs counsel review.
 - Translations need native-speaker review.
 - Production email requires a provider.
-- Files over 95 MB require a multipart/direct-upload design.
+- Direct release upload uses a single presigned R2 `PUT`; it supports releases up to 1 GiB. An interrupted upload must be restarted. Move to presigned multipart upload only when resumability or releases above 1 GiB are required.
 - DepthLume Radar is analytics software, not a trading system or financial adviser.
