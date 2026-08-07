@@ -18,6 +18,10 @@
 - License keys and desktop tokens are never stored or logged in plaintext; the displayed activation key is available only once.
 - License checks retain the existing website account, beta-access and protected-download model.
 
+### Account verification
+
+- Registration now safely resends a verification email for an existing unverified account, while invalidating earlier unused verification links and retaining an account-enumeration-safe response.
+
 ### Verification
 
 - `npm run test` — 12 passing tests.
