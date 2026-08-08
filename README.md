@@ -20,7 +20,7 @@ The public HTML remains static. Private data and files are returned only by auth
 
 ## Current checkpoint
 
-The direct private R2 release upload flow has been deployed and successfully used for a Radar release. Website-side licensing is deployed: a beta user has been approved, downloaded Radar, received an administrator-issued key and activated the desktop application. Production email delivery is configured through Resend and the public origin is `https://depthlume.com`. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
+The direct private R2 release upload flow is deployed. Website-side licensing uses automatic verified-email access: starting a 7-day trial creates one permanent key, shows it in the billing cabinet and emails it through Resend. Monthly direct USDT TRC20 renewal uses a unique payment amount and confirmed TxID. Production origin is `https://depthlume.com`. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
 
 ## Current product structure
 
@@ -138,9 +138,9 @@ The website is the licensing authority; the Radar executable never receives Clou
 - `POST /api/licenses/validate` — checks the desktop token, device and current beta/license state, then rotates the token.
 - `POST /api/licenses/deactivate` — revokes the token and frees that device slot.
 
-All desktop tokens and license keys are stored in D1 only as SHA-256 hashes. The raw activation key is displayed to an administrator only once when it is created. The API never exposes a public release binary URL and does not change the existing protected `/api/download` flow.
+All desktop tokens and license keys are stored in D1 only as SHA-256 hashes. The raw activation key is shown once in the billing cabinet and simultaneously emailed to the verified user. The API never exposes a public release binary URL and does not change the existing protected `/api/download` flow.
 
-To issue a key, first approve and grant **beta** access to the verified user. Then open `/admin/`, use **Radar licenses**, enter that user's email and choose a device limit (one by default). Copy the key immediately and give it to the user through a secure channel. Suspending or revoking a license blocks the next validation and revokes active desktop sessions.
+Users do not need administrator approval for standard access: after email verification they start a 7-day trial in `/account/billing/`, receive their permanent key on screen and by email, then activate one device. Administrators can inspect payments and licenses in `/admin/`; suspending or revoking a license blocks the next validation and revokes active desktop sessions.
 
 For the desktop build, set its `DEPTHLUME_LICENSE_API_URL` to the stable production Pages origin, for example:
 

@@ -14,7 +14,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const key = text(body.license_key, 'license_key', 12, 180);
     const deviceId = text(body.device_id, 'device_id', 16, 180);
     const appVersion = text(body.app_version, 'app_version', 1, 60);
-    const row = await env.DB.prepare(`SELECT l.id license_id,l.user_id,u.email,u.email_verified,u.access_status,l.type,l.status license_status,l.starts_at,l.expires_at,l.max_devices,k.status key_status FROM license_keys k JOIN licenses l ON l.id=k.license_id JOIN users u ON u.id=l.user_id WHERE k.key_hash=?1 AND l.product=?2 LIMIT 1`).bind(await sha256(key), RADAR_PRODUCT).first<LicenseRow>();
+    const row = await env.DB.prepare(`SELECT l.id license_id,l.user_id,u.email,u.email_verified,u.access_status,u.commercial_enabled_at,l.type,l.status license_status,l.starts_at,l.expires_at,l.max_devices,k.status key_status,l.access_type,l.billing_status,l.cancel_at_period_end FROM license_keys k JOIN licenses l ON l.id=k.license_id JOIN users u ON u.id=l.user_id WHERE k.key_hash=?1 AND l.product=?2 LIMIT 1`).bind(await sha256(key), RADAR_PRODUCT).first<LicenseRow>();
     if (!row) return licenseCode('invalid_license_key', 401);
     const now = new Date().toISOString(); const state = usable(row, now);
     if (state) return licenseCode(state, state === 'invalid_license_key' ? 401 : 403);

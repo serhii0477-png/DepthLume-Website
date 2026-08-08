@@ -1,6 +1,16 @@
 # DepthLume Website — Project Handoff
 
-This document is the working context for continuing the project in a new Codex or ChatGPT conversation. Last updated: **2026-08-07**.
+This document is the working context for continuing the project in a new Codex or ChatGPT conversation. Last updated: **2026-08-08**.
+
+## Checkpoint: 2026-08-08 — commercial access and direct USDT renewal
+
+The manual beta-approval gate has been replaced for new commercial users. A verified account can start one 7-day trial in `/account/billing/` without waiting for an administrator. The server creates one permanent `DL-...` activation key, shows it once in the cabinet and sends it using the configured Resend sender. Radar uses the key only for first activation; monthly renewal never issues another key.
+
+The live payment path is **manual direct USDT on TRC20**, not automatic card charging and not the NOWPayments hosted checkout. The billing cabinet creates a 30-minute payment order with a unique exact amount from `3.000001` through `3.009999 USDT`, the fixed merchant TRC20 address and a QR code. The customer sends that exact amount using TRC20 and pastes the transaction ID (TxID). The server checks the confirmed transfer through TRON data, rejects reused TxIDs and automatically adds 30 days to the existing license. The public wallet address is configured as a non-secret Pages variable; an optional `TRONGRID_API_KEY` is a Cloudflare secret only.
+
+The administrator can inspect users, licenses, payments and release uploads in `/admin/`. The restored R2 release-upload progress controls are deployed. Legacy beta licenses have no commercial expiry metadata: they deliberately remain usable, but the API now returns them as `complimentary` access rather than a paid `subscription`. This prevents the Windows UI from showing a false paid status.
+
+Important current limitation: direct USDT transfers cannot be auto-debited each month. A customer must start and confirm each renewal themselves. For true recurring card payments, first register the business and then add an approved payment acquirer/merchant-of-record; do not treat a personal card or an unverified payment wallet as a long-term subscription system.
 
 ## Checkpoint: 2026-08-07
 

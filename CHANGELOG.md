@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-08 — Commercial access and direct TRC20 renewal
+
+- Replaced manual beta approval for new commercial users with verified-email self-service access: one 7-day trial, one permanent desktop activation key and email delivery through Resend.
+- Added a billing cabinet and administrator payment/license visibility.
+- Added direct USDT TRC20 payment orders with a fixed merchant address, unique exact amounts, QR display, TxID confirmation, confirmed-chain validation, replay protection and automatic 30-day license extension.
+- Restored administrator private R2 archive upload, progress and release controls after a client-side script regression.
+- Corrected legacy beta entitlement classification: an older license without commercial expiry metadata now returns `complimentary` access rather than a misleading paid `subscription` status.
+- The current direct TRC20 method is manual renewal, not automatic recurring charging.
+
 ## 2026-08-07 — Website checkpoint
 
 ### Custom production domain

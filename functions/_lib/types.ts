@@ -10,6 +10,13 @@ export interface Env {
   R2_SECRET_ACCESS_KEY?: string;
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
+  NOWPAYMENTS_API_KEY?: string;
+  NOWPAYMENTS_IPN_SECRET?: string;
+  TRONGRID_API_KEY?: string;
+  LIQPAY_PUBLIC_KEY?: string;
+  LIQPAY_PRIVATE_KEY?: string;
+  RADAR_MONTHLY_AMOUNT?: string;
+  RADAR_CURRENCY?: string;
 }
 
 export type Role = 'user' | 'admin';

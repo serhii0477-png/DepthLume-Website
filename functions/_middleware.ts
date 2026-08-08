@@ -18,6 +18,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   headers.set('x-content-type-options', 'nosniff');
   headers.set('referrer-policy', 'strict-origin-when-cross-origin');
   headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=()');
-  headers.set('content-security-policy', `default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://cloudflareinsights.com${r2ConnectSource}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`);
+  headers.set('content-security-policy', `default-src 'self'; img-src 'self' data: https://api.qrserver.com; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://cloudflareinsights.com${r2ConnectSource}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`);
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 };
