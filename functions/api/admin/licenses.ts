@@ -9,7 +9,7 @@ const adminOnly = async (request: Request, env: Env) => { const user = await cur
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const admin = await adminOnly(request, env); if (!admin) return json({ ok: false, error: 'Доступ лише для адміністратора.' }, 403);
-  const rows = await env.DB.prepare(`SELECT l.id,l.user_id,u.email,l.type,l.status,l.starts_at,l.expires_at,l.max_devices,l.created_at,(SELECT COUNT(*) FROM device_activations a WHERE a.license_id=l.id AND a.revoked_at IS NULL) active_devices FROM licenses l JOIN users u ON u.id=l.user_id WHERE l.product=?1 ORDER BY l.created_at DESC LIMIT 100`).bind(RADAR_PRODUCT).all();
+  const rows = await env.DB.prepare(`SELECT l.id,l.user_id,u.email,l.type,l.status,l.starts_at,l.expires_at,l.max_devices,l.created_at,l.access_type,l.billing_status,l.cancel_at_period_end,l.provider_subscription_id,(SELECT COUNT(*) FROM device_activations a WHERE a.license_id=l.id AND a.revoked_at IS NULL) active_devices,(SELECT COUNT(*) FROM payment_events p WHERE p.license_id=l.id) payment_events FROM licenses l JOIN users u ON u.id=l.user_id WHERE l.product=?1 ORDER BY l.created_at DESC LIMIT 100`).bind(RADAR_PRODUCT).all();
   return json({ ok: true, licenses: rows.results });
 };
 

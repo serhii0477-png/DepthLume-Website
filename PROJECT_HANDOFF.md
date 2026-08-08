@@ -1,13 +1,24 @@
 # DepthLume Website — Project Handoff
 
-This document is the working context for continuing the project in a new Codex or ChatGPT conversation. Last updated: **2026-08-07**.
+This document is the working context for continuing the project in a new Codex or ChatGPT conversation. Last updated: **2026-08-08**.
+
+## Checkpoint: 2026-08-08 — commercial access and direct USDT renewal
+
+The manual beta-approval gate has been replaced for new commercial users. A verified account can start one 7-day trial in `/account/billing/` without waiting for an administrator. The server creates one permanent `DL-...` activation key, shows it once in the cabinet and sends it using the configured Resend sender. Radar uses the key only for first activation; monthly renewal never issues another key.
+
+The live payment path is **manual direct USDT on TRC20**, not automatic card charging and not the NOWPayments hosted checkout. The billing cabinet creates a 30-minute payment order with a unique exact amount from `3.000001` through `3.009999 USDT`, the fixed merchant TRC20 address and a QR code. The customer sends that exact amount using TRC20 and pastes the transaction ID (TxID). The server checks the confirmed transfer through TRON data, rejects reused TxIDs and automatically adds 30 days to the existing license. The public wallet address is configured as a non-secret Pages variable; an optional `TRONGRID_API_KEY` is a Cloudflare secret only.
+
+The administrator can inspect users, licenses, payments and release uploads in `/admin/`. The restored R2 release-upload progress controls are deployed. Legacy beta licenses have no commercial expiry metadata: they deliberately remain usable, but the API now returns them as `complimentary` access rather than a paid `subscription`. This prevents the Windows UI from showing a false paid status.
+
+Important current limitation: direct USDT transfers cannot be auto-debited each month. A customer must start and confirm each renewal themselves. For true recurring card payments, first register the business and then add an approved payment acquirer/merchant-of-record; do not treat a personal card or an unverified payment wallet as a long-term subscription system.
 
 ## Checkpoint: 2026-08-07
 
-The project is being preserved after two completed infrastructure changes:
+The project is being preserved after completed production rollout:
 
 1. **Large private releases** use a direct, 15-minute signed R2 `PUT`, then D1 finalization after the backend verifies the object. This flow has been deployed and a Radar release was successfully uploaded privately.
-2. **Radar licensing** is implemented locally in this repository: D1 migration `0003_licenses.sql`, the three desktop API endpoints, and the administrator license interface are ready. Tests, type checking and production build pass. It must be deployed and its migration applied before desktop activation can be considered live.
+2. **Radar licensing** is deployed: D1 migration `0003_licenses.sql`, the three desktop API endpoints and the administrator license interface are live. A non-admin beta user has received an administrator-issued key and successfully activated Radar.
+3. **Custom domain and email** are live: `https://depthlume.com` is the public origin, and Resend delivery uses a verified sender domain. No secret values are recorded in this repository.
 
 The existing beta account model remains the source of truth. An administrator must grant a verified account beta access before issuing it a license. A raw `DL-...` activation key appears one time only. If it is copied with additional text or lost, revoke that license and issue a replacement instead of trying to recover the original key.
 
@@ -15,13 +26,13 @@ The existing beta account model remains the source of truth. An administrator mu
 
 - Local workspace: `E:\DepthLumeWebsite`
 - GitHub: <https://github.com/serhii0477-png/DepthLume-Website>
-- Public production site: <https://depthlume-preview.pages.dev>
-- Main Ukrainian page: <https://depthlume-preview.pages.dev/uk/>
-- Ukrainian DepthLume Radar page: <https://depthlume-preview.pages.dev/uk/radar/>
+- Public production site: <https://depthlume.com>
+- Main Ukrainian page: <https://depthlume.com/uk/>
+- Ukrainian DepthLume Radar page: <https://depthlume.com/uk/radar/>
 - Cloudflare Pages project: `depthlume-preview`
 - Production branch configured in Cloudflare: `main`
 
-Do not confuse `preview.depthlume-preview.pages.dev` or hash-prefixed deployment URLs with the public production address. Preview deployments are protected by Cloudflare Access; the stable `depthlume-preview.pages.dev` address is public.
+Do not confuse preview or hash-prefixed `pages.dev` deployment URLs with the public production address. Preview deployments are protected by Cloudflare Access; `https://depthlume.com` is the canonical public origin. The legacy stable `depthlume-preview.pages.dev` origin remains available for backward compatibility.
 
 ## 2. Current product architecture
 
@@ -122,10 +133,10 @@ The API endpoints are `POST /api/licenses/activate`, `/api/licenses/validate` an
 At `/admin/`, first grant a verified account beta access, then create its Radar license key. The raw key appears exactly once, so copy it before closing the message. Default device limit is one. Suspension/revocation invalidates current desktop sessions; device deactivation frees the slot. The desktop environment variable must point to the stable public Pages origin:
 
 ```powershell
-[Environment]::SetEnvironmentVariable("DEPTHLUME_LICENSE_API_URL", "https://depthlume-preview.pages.dev", "User")
+[Environment]::SetEnvironmentVariable("DEPTHLUME_LICENSE_API_URL", "https://depthlume.com", "User")
 ```
 
-Before the feature is deployed, run `npm run db:migrate:remote`; this applies `0003_licenses.sql`. Licensing uses the existing `DB` D1 binding and needs no extra Cloudflare secret or public R2 configuration.
+The licensing migration has been applied in production. Licensing uses the existing `DB` D1 binding and needs no extra Cloudflare secret or public R2 configuration.
 
 ## 6. Cloudflare production state
 
@@ -134,9 +145,9 @@ Configured resources:
 - Pages project: `depthlume-preview`
 - D1 database: `depthlume-website`
 - R2 bucket: `depthlume-private-releases`
-- Production URL: `https://depthlume-preview.pages.dev`
+- Production URL: `https://depthlume.com`
 - `APP_ENV=production`
-- `APP_URL=https://depthlume-preview.pages.dev`
+- `APP_URL=https://depthlume.com`
 - `BETA_LIMIT=10`
 
 The production build is deployed manually with:
@@ -156,13 +167,13 @@ Never commit `.dev.vars`, `.env`, Cloudflare tokens, passwords or secret values.
 Expected secrets:
 
 - `ADMIN_BOOTSTRAP_SECRET` — used only for the first administrator; remove or rotate it after bootstrap.
-- `RESEND_API_KEY` — still needs production configuration.
-- `EMAIL_FROM` — still needs production configuration and must use a Resend-verified domain.
+- `RESEND_API_KEY` — configured as a production secret; never record its value.
+- `EMAIL_FROM` — configured as a production secret using a Resend-verified sender domain; never record its value.
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` — required for direct releases above the Pages request limit. Create a bucket-scoped R2 S3 API token with only Object Read & Write on `depthlume-private-releases`; save all three as Pages production secrets. Do not put them in `wrangler.toml` or Git.
 
 For browser direct upload, configure the private R2 bucket's CORS policy for the exact production origin(s), `PUT`, and the `Content-Type` header. This does not make the bucket public. The required Pages binding remains `RELEASES`; no additional binding is needed. Run migration `0002_release_uploads.sql` before production deployment.
 
-The Resend code path already exists in `functions/_lib/email.ts`. Registration and forgotten-password APIs call it. Until both Resend settings are present, new production users will not receive verification or reset messages.
+The Resend code path in `functions/_lib/email.ts` is active. Registration and forgotten-password APIs use it for production messages. For a delivery problem, inspect Resend email activity and the sender-domain status without exposing API-key values.
 
 After Resend is configured, registering an existing unverified email creates a new one-time verification link and invalidates previous unused verification links. The response remains generic so the endpoint does not reveal whether an arbitrary email has an account.
 
@@ -209,17 +220,14 @@ The build validates localized routes, internal links, SEO alternates and prohibi
 
 ## 10. Known remaining work
 
-1. Verify a sender domain in Resend and set `RESEND_API_KEY` plus `EMAIL_FROM` in Cloudflare production.
-2. Test registration email verification and password recovery end to end.
-3. Add the R2 S3 signing secrets and bucket CORS policy, apply migration `0002_release_uploads.sql`, then upload the first approved private DepthLume Radar release through `/admin/`.
-4. Apply `0003_licenses.sql`, deploy the license APIs, create a beta test key in `/admin/`, then verify Radar activation, validation and device deactivation end to end.
-5. Review beta application, approval, download and feedback flows with a non-admin test account.
-6. Replace placeholder company/contact/legal details and obtain legal review.
-7. Perform native-language review of all translations.
-8. Add analytics/visitor reporting if not already enabled in Cloudflare Web Analytics.
-9. When DepthLume itself is ready, create its dedicated product page using the Radar product-page pattern.
-10. Add final logo, favicon and social-sharing image.
+1. Periodically review Resend delivery activity and sender-domain status.
+2. Review beta application, approval, download and feedback flows with further non-admin test accounts.
+3. Replace placeholder company/contact/legal details and obtain legal review.
+4. Perform native-language review of all translations.
+5. Add analytics/visitor reporting if not already enabled in Cloudflare Web Analytics.
+6. When DepthLume itself is ready, create its dedicated product page using the Radar product-page pattern.
+7. Add final logo, favicon and social-sharing image.
 
 ## 11. Suggested prompt for a new ChatGPT conversation
 
-> Continue development of the DepthLume website from the repository https://github.com/serhii0477-png/DepthLume-Website. First read README.md, PROJECT_HANDOFF.md, CONTENT_STATUS.md and DESIGN_SYSTEM.md. The public production site is https://depthlume-preview.pages.dev. DepthLume Radar is the active beta product at /uk/radar/; DepthLume is the future core product. Preserve the multilingual architecture, the authentication/beta portal, D1/R2 security boundaries and the current product-specific screenshot rules. Never commit or request secret values. Run npm run test, npm run check and npm run build before deployment.
+> Continue development of the DepthLume website from the repository https://github.com/serhii0477-png/DepthLume-Website. First read README.md, PROJECT_HANDOFF.md, CONTENT_STATUS.md and DESIGN_SYSTEM.md. The public production site is https://depthlume.com. DepthLume Radar is the active beta product at /uk/radar/; DepthLume is the future core product. Preserve the multilingual architecture, the authentication/beta portal, D1/R2 security boundaries and the current product-specific screenshot rules. Never commit or request secret values. Run npm run test, npm run check and npm run build before deployment.

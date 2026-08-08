@@ -9,13 +9,15 @@ const { locale = 'en', pathname = '/' } = Astro.props;
 const t = getTranslation(locale);
 const home = localizedPath(locale, '');
 const radarPath = '/' + (localeConfig[locale].prefix ? localeConfig[locale].prefix + '/' : '') + 'radar/';
+const isRadarPage = pathname.includes('/radar');
+const navigationBase = isRadarPage ? radarPath : home;
 const navigation = [
-  { label:t.nav[0], href:`${home}#features` },
-  { label:t.nav[1], href:`${home}#how-it-works` },
-  { label:t.nav[2], href:`${home}#scenario-lab` },
-  { label:t.nav[3], href:`${home}#screenshots` },
-  { label:t.nav[4], href:`${home}#faq` },
-  { label:t.nav[5], href:localizedPath(locale,'documentation') },
+  { label:t.nav[0], href:`${navigationBase}#features` },
+  { label:t.nav[1], href:`${navigationBase}#how-it-works` },
+  { label:t.nav[2], href:`${navigationBase}#scenario-lab` },
+  { label:t.nav[3], href:`${navigationBase}#screenshots` },
+  { label:t.nav[4], href:`${navigationBase}#faq` },
+  { label:t.nav[5], href:isRadarPage ? `${radarPath}#documentation` : localizedPath(locale,'documentation') },
 ];
 
 const chrome: Record<Locale, { products:string; radar:string; radarMeta:string; depthlume:string; soon:string; account:string; login:string; logout:string }> = {
@@ -128,7 +130,8 @@ const isExplicitLocale = locales.some((item) => localeConfig[item].prefix === ex
     document.querySelectorAll<HTMLAnchorElement>('[data-nav-index]').forEach((item) => {
       const index = Number(item.dataset.navIndex);
       item.textContent = selected.nav[index];
-      item.href = index === 5 ? selected.documentation : `${selected.home}#${['features','how-it-works','scenario-lab','screenshots','faq'][index]}`;
+      const radar = window.location.pathname.includes('/radar/');
+      item.href = index === 5 ? (radar ? `${selected.radarPath}#documentation` : selected.documentation) : `${radar ? selected.radarPath : selected.home}#${['features','how-it-works','scenario-lab','screenshots','faq'][index]}`;
     });
     document.querySelectorAll<HTMLElement>('[data-account-link]').forEach((item) => item.textContent = selected.account);
     document.querySelectorAll<HTMLAnchorElement>('[data-auth-action]').forEach((item) => {

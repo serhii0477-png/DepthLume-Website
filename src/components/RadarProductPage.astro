@@ -3,16 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from './Button.astro';
 import RadarLiveVisual from './RadarLiveVisual.astro';
 import SectionHeading from './SectionHeading.astro';
-import { featureNames, getTranslation } from '../i18n/translations';
+import FAQ from './FAQ.astro';
 import { localeConfig, localizedPath, type Locale } from '../i18n/locales';
 
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const t = getTranslation(locale);
 const prefix = localeConfig[locale].prefix;
 const path = '/' + (prefix ? prefix + '/' : '') + 'radar/';
 const home = localizedPath(locale, '');
-const selectedFeatures = [0,2,3,4,6,11].map((index) => ({ name:featureNames[index], text:t.home.featureDescriptions[index] }));
+const radarContent = {
+  en:{capabilityEyebrow:'Radar capabilities',capabilityDescription:'A live field view groups markets by state, then keeps the evidence behind every selected market close at hand.',features:[['Visual market field','See live markets grouped by activity and state instead of scanning a flat ticker list.'],['Market context','Open a selected market with its signals, evidence, risks and data-quality context.'],['Explainable score','Review the factors behind the current Radar score; it is research context, not a trading signal.'],['Live events','Follow relevant market events as they arrive without connecting a trading account.'],['Market list','Compare active markets in a focused list alongside the visual field.'],['Research boundaries','Radar analyzes public data only: it does not place orders, manage funds or promise outcomes.']],workflowEyebrow:'How Radar works',workflow:[['Open the live field','Start with the visual Radar to find markets whose current state deserves attention.'],['Inspect one market','Open the selected market to review its score, evidence, risks and source quality.'],['Record an independent decision','Use the context for your own research. Radar does not execute trades or recommend an outcome.']],scenarioEyebrow:'Research workflow',scenarioTitle:'A repeatable process for live market research.',scenarioDescription:'Radar keeps the current market field, the selected market evidence and your independent review in one focused flow.',faqEyebrow:'FAQ',faqTitle:'DepthLume Radar beta',faqs:[['Does Radar connect to my trading account?','No. Radar works with public market data and never connects to a trading account or places orders.'],['Does Radar give trading advice?','No. Scores, events and context support independent research; they are not financial advice or a promise of results.'],['What is included in the beta?','The beta provides the Windows Radar application, current visual field, market list and live-event research views.']],docsEyebrow:'Radar documentation',docsTitle:'DepthLume Radar: product boundaries',docsText:'The active product is a Windows market-research workspace. It organizes public live data into a visual field and explainable market context. Trading execution, account connection and fund management are outside the product.'},
+  uk:{capabilityEyebrow:'Можливості Radar',capabilityDescription:'Живе поле групує ринки за станом, а докази для вибраного ринку завжди залишаються поруч.',features:[['Візуальне поле ринку','Переглядайте живі ринки, згруповані за активністю та станом, а не в одному плоскому списку тикерів.'],['Контекст ринку','Відкривайте вибраний ринок із його сигналами, доказами, ризиками та якістю даних.'],['Пояснюваний бал','Перевіряйте чинники поточного балу Radar: це контекст дослідження, а не торговий сигнал.'],['Живі події','Слідкуйте за релевантними ринковими подіями без підключення торгового акаунта.'],['Список ринків','Порівнюйте активні ринки у сфокусованому списку поруч із візуальним полем.'],['Межі дослідження','Radar аналізує лише публічні дані: він не розміщує ордери, не керує коштами і не обіцяє результатів.']],workflowEyebrow:'Як працює Radar',workflow:[['Відкрийте живе поле','Почніть з візуального Radar, щоб знайти ринки, поточний стан яких вартий уваги.'],['Дослідіть один ринок','Відкрийте вибраний ринок і перегляньте його бал, докази, ризики та якість джерел.'],['Зафіксуйте незалежне рішення','Використайте контекст для власного дослідження. Radar не виконує угод і не рекомендує результат.']],scenarioEyebrow:'Процес дослідження',scenarioTitle:'Повторюваний процес дослідження живого ринку.',scenarioDescription:'Radar об’єднує поточне поле ринку, докази вибраного ринку та вашу незалежну перевірку в одному сфокусованому процесі.',faqEyebrow:'Питання',faqTitle:'Beta DepthLume Radar',faqs:[['Чи підключається Radar до мого торгового акаунта?','Ні. Radar працює з публічними ринковими даними, не підключається до торгового акаунта й не розміщує ордери.'],['Чи дає Radar торгові поради?','Ні. Бали, події та контекст підтримують незалежне дослідження; це не фінансова порада й не обіцянка результату.'],['Що входить до beta?','Beta надає Windows-застосунок Radar, поточне візуальне поле, список ринків і перегляд живих подій.']],docsEyebrow:'Документація Radar',docsTitle:'DepthLume Radar: межі продукту',docsText:'Активний продукт — Windows-середовище для ринкових досліджень. Воно організовує публічні живі дані у візуальне поле та пояснюваний ринковий контекст. Виконання угод, підключення акаунта й керування коштами не входять до продукту.'}
+} as const;
 
 const productCopy: Record<Locale, { label:string; coreMeta:string; radarMeta:string; eyebrow:string; title:string; description:string; primary:string; secondary:string; capabilityTitle:string; workflowTitle:string; boundaryTitle:string; boundaryText:string }> = {
   en:{label:'Product',coreMeta:'Core platform · roadmap',radarMeta:'Active beta · Windows',eyebrow:'DepthLume Radar · First beta product',title:'See the market as a field, not a list.',description:'DepthLume Radar turns live public market data into a spatial overview of activity, then explains the selected market through evidence, risks and data quality.',primary:'Join Radar beta',secondary:'Open my account',capabilityTitle:'Radar intelligence, from overview to evidence.',workflowTitle:'A focused workflow for live market research.',boundaryTitle:'Analytics without trade execution.',boundaryText:'Radar does not connect to a trading account, place orders or promise outcomes. It organizes public market evidence so the user can make an independent decision.'},
@@ -25,6 +27,7 @@ const productCopy: Record<Locale, { label:string; coreMeta:string; radarMeta:str
   'zh-CN':{label:'产品',coreMeta:'核心平台 · 路线图',radarMeta:'测试中 · Windows',eyebrow:'DepthLume Radar · 首个测试产品',title:'把市场看作一个场，而不是列表。',description:'DepthLume Radar 将实时公开市场数据转化为空间活动视图，并通过证据、风险和数据质量解释所选市场。',primary:'加入 Radar 测试',secondary:'打开我的账户',capabilityTitle:'从全景到证据的 Radar 智能。',workflowTitle:'专注的实时市场研究流程。',boundaryTitle:'不执行交易的分析工具。',boundaryText:'Radar 不连接交易账户、不下单，也不承诺结果。它整理公开市场证据，帮助用户独立决策。'},
 };
 const c = productCopy[locale];
+const r = radarContent[locale === 'uk' ? 'uk' : 'en'];
 ---
 <BaseLayout title="DepthLume Radar" description={c.description} {path} {locale}>
   <section class="radar-product-rail" aria-label={c.label}>
@@ -42,7 +45,7 @@ const c = productCopy[locale];
         <h1>{c.title}</h1>
         <p>{c.description}</p>
         <div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href="/account/">{c.secondary}</Button></div>
-        <small>✓ {t.home.hero[5]}</small>
+        <small>✓ {r.docsText}</small>
       </div>
       <figure class="radar-hero-visual">
         <div class="radar-hero-visual__bar" aria-hidden="true">
@@ -50,26 +53,34 @@ const c = productCopy[locale];
           <span><i></i> LIVE PRODUCT</span>
         </div>
         <img src="/images/product/depthlume-radar-live-2026-08.png" width="2545" height="1317" alt="DepthLume Radar visual radar and market intelligence interface" decoding="async" fetchpriority="high" />
-        <figcaption>{t.home.realCaption}</figcaption>
+        <figcaption>{r.docsText}</figcaption>
       </figure>
     </div>
   </section>
 
   <RadarLiveVisual {locale} />
 
-  <section class="section section--line radar-capabilities" id="radar-capabilities">
-    <div class="container"><SectionHeading eyebrow={t.home.sections[3][0]} title={c.capabilityTitle} description={t.home.featureDescriptions[6]} /><div class="radar-capability-grid">{selectedFeatures.map((item,index) => <article><span class="mono">0{index+1}</span><h3>{item.name}</h3><p>{item.text}</p></article>)}</div></div>
+  <section class="section section--line radar-capabilities" id="features">
+    <div class="container"><SectionHeading eyebrow={r.capabilityEyebrow} title={c.capabilityTitle} description={r.capabilityDescription} /><div class="radar-capability-grid">{r.features.map((item,index) => <article><span class="mono">0{index+1}</span><h3>{item[0]}</h3><p>{item[1]}</p></article>)}</div></div>
   </section>
 
-  <section class="section section--line radar-workflow">
-    <div class="container radar-workflow__grid"><SectionHeading eyebrow={t.home.sections[5][0]} title={c.workflowTitle} /><ol>{t.home.steps.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
+  <section class="section section--line radar-workflow" id="how-it-works">
+    <div class="container radar-workflow__grid"><SectionHeading eyebrow={r.workflowEyebrow} title={c.workflowTitle} /><ol>{r.workflow.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
   </section>
 
   <section class="section section--line radar-boundary">
     <div class="container radar-boundary__inner"><div><span class="eyebrow">Product boundary</span><h2>{c.boundaryTitle}</h2></div><p>{c.boundaryText}</p></div>
   </section>
 
-  <section class="section section--line radar-product-cta"><div class="container"><span class="eyebrow">DepthLume Radar · Closed beta</span><h2>{t.home.sections[7][1]}</h2><div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href={localizedPath(locale,'documentation')}>{t.nav[5]}</Button></div></div></section>
+  <section class="section section--line radar-workflow" id="scenario-lab">
+    <div class="container radar-workflow__grid"><SectionHeading eyebrow={r.scenarioEyebrow} title={r.scenarioTitle} description={r.scenarioDescription} /><ol>{r.workflow.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
+  </section>
+
+  <section class="section section--line" id="documentation"><div class="container radar-boundary__inner"><div><span class="eyebrow">{r.docsEyebrow}</span><h2>{r.docsTitle}</h2></div><p>{r.docsText}</p></div></section>
+
+  <section class="section section--line" id="faq"><div class="container radar-workflow__grid"><SectionHeading eyebrow={r.faqEyebrow} title={r.faqTitle} description={c.description} /><FAQ items={r.faqs.map(([q,a]) => ({q,a}))} /></div></section>
+
+  <section class="section section--line radar-product-cta"><div class="container"><span class="eyebrow">DepthLume Radar · Closed beta</span><h2>{r.scenarioTitle}</h2><div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href="#documentation">{r.docsEyebrow}</Button></div></div></section>
 </BaseLayout>
 
 <style>

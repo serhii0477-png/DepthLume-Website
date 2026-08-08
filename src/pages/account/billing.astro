@@ -1,0 +1,16 @@
+---
+import PortalPage from '../../components/PortalPage.astro';
+---
+<PortalPage title="Підписка" description="Керуйте пробним періодом, оплатою та автоподовженням." eyebrow="DepthLume Radar">
+  <section class="portal-card" data-billing>
+    <span class="eyebrow">DepthLume Radar</span>
+    <h2>Підписка та оплата</h2>
+    <p data-summary>Завантаження…</p>
+    <div class="form-status"><strong>Як оплатити 3 USDT:</strong><ol><li>Натисніть «Створити рахунок 3 USDT».</li><li>На наступній сторінці скопіюйте адресу або відскануйте QR-код.</li><li>У своєму гаманці чи на біржі виберіть <strong>USDT</strong> і мережу <strong>TRC20</strong>.</li><li>Надішліть точну суму, яку покаже рахунок.</li></ol><p><strong>Order ID не є адресою гаманця.</strong> Його не потрібно копіювати в гаманець.</p></div>
+    <div class="portal-actions"><button class="button button--primary" type="button" data-start>Почати 7 днів безкоштовно</button><button class="button button--primary" type="button" data-pay hidden>Створити рахунок 3 USDT</button><button class="button button--secondary" type="button" data-cancel hidden>Вимкнути нагадування</button></div>
+    <p class="form-status" data-status aria-live="polite"></p>
+    <div class="portal-actions" data-payment-link hidden></div>
+    <div data-key hidden><p><strong>Ваш постійний ключ активації:</strong></p><code data-key-value></code><p>Збережіть його та введіть у програмі. Для продовження доступу використовуйте кнопку «Оплатити 3 USDT».</p></div>
+  </section>
+</PortalPage>
+<script type="module" is:inline src="/scripts/billing-direct-tron.js?v=20260808-1"></script>

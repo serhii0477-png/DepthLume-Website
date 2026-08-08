@@ -2,8 +2,8 @@
 
 Official multilingual marketing site and secure beta-access portal for **DepthLume Radar**, a Windows desktop market analytics and order-flow research platform.
 
-- Production: <https://depthlume-preview.pages.dev>
-- Ukrainian Radar page: <https://depthlume-preview.pages.dev/uk/radar/>
+- Production: <https://depthlume.com>
+- Ukrainian Radar page: <https://depthlume.com/uk/radar/>
 - Repository: <https://github.com/serhii0477-png/DepthLume-Website>
 - Full project handoff and continuation notes: [`PROJECT_HANDOFF.md`](PROJECT_HANDOFF.md)
 - Change history and the current checkpoint: [`CHANGELOG.md`](CHANGELOG.md)
@@ -20,7 +20,7 @@ The public HTML remains static. Private data and files are returned only by auth
 
 ## Current checkpoint
 
-The direct private R2 release upload flow has been deployed and successfully used for a Radar release. Website-side licensing is implemented in this repository and has passed unit, type and production-build checks. Before issuing the first real desktop license, deploy the current commit and apply migration `0003_licenses.sql`; then verify activation with a newly created key. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
+The direct private R2 release upload flow is deployed. Website-side licensing uses automatic verified-email access: starting a 7-day trial creates one permanent key, shows it in the billing cabinet and emails it through Resend. Monthly direct USDT TRC20 renewal uses a unique payment amount and confirmed TxID. Production origin is `https://depthlume.com`. Do not reuse a key if it was copied incorrectly: create a replacement and revoke the old license, because raw keys are intentionally unrecoverable.
 
 ## Current product structure
 
@@ -113,7 +113,7 @@ Before the first production large upload, create an R2 S3 API token restricted t
 ```json
 [
   {
-    "AllowedOrigins": ["https://depthlume-preview.pages.dev"],
+    "AllowedOrigins": ["https://depthlume.com", "https://depthlume-preview.pages.dev"],
     "AllowedMethods": ["PUT"],
     "AllowedHeaders": ["Content-Type"],
     "ExposeHeaders": ["ETag"],
@@ -122,13 +122,13 @@ Before the first production large upload, create an R2 S3 API token restricted t
 ]
 ```
 
-Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-format file with `npx wrangler r2 bucket cors set depthlume-private-releases --file r2-release-cors.json`. Add the production custom-domain origin as an additional exact value if one is used. The bucket remains private.
+Apply it in R2 bucket **Settings → CORS Policy**, or use the included CLI-format file with `npx wrangler r2 bucket cors set depthlume-private-releases --file r2-release-cors.json`. The configuration includes the production custom domain and retains the legacy `pages.dev` address during the transition. The bucket remains private.
 
 ## Email verification
 
 With `RESEND_API_KEY` and `EMAIL_FROM`, verification and reset links are emailed. Registering an already existing but unverified email safely issues a fresh verification link and invalidates its earlier unused links. In `development`, APIs also return test links. Without a provider, new production accounts remain unverified by design.
 
-Production Resend delivery is still pending. Configure both secrets in Cloudflare Pages only after verifying a sender domain in Resend; never put their real values in this repository.
+Production Resend delivery uses a verified sender domain. Keep `RESEND_API_KEY` and `EMAIL_FROM` as Cloudflare Pages secrets only; never put their real values in this repository. If delivery stops, first check the Resend email activity log and sender-domain status.
 
 ## Desktop licensing
 
@@ -138,16 +138,16 @@ The website is the licensing authority; the Radar executable never receives Clou
 - `POST /api/licenses/validate` — checks the desktop token, device and current beta/license state, then rotates the token.
 - `POST /api/licenses/deactivate` — revokes the token and frees that device slot.
 
-All desktop tokens and license keys are stored in D1 only as SHA-256 hashes. The raw activation key is displayed to an administrator only once when it is created. The API never exposes a public release binary URL and does not change the existing protected `/api/download` flow.
+All desktop tokens and license keys are stored in D1 only as SHA-256 hashes. The raw activation key is shown once in the billing cabinet and simultaneously emailed to the verified user. The API never exposes a public release binary URL and does not change the existing protected `/api/download` flow.
 
-To issue a key, first approve and grant **beta** access to the verified user. Then open `/admin/`, use **Radar licenses**, enter that user's email and choose a device limit (one by default). Copy the key immediately and give it to the user through a secure channel. Suspending or revoking a license blocks the next validation and revokes active desktop sessions.
+Users do not need administrator approval for standard access: after email verification they start a 7-day trial in `/account/billing/`, receive their permanent key on screen and by email, then activate one device. Administrators can inspect payments and licenses in `/admin/`; suspending or revoking a license blocks the next validation and revokes active desktop sessions.
 
 For the desktop build, set its `DEPTHLUME_LICENSE_API_URL` to the stable production Pages origin, for example:
 
 ```powershell
 [Environment]::SetEnvironmentVariable(
   "DEPTHLUME_LICENSE_API_URL",
-  "https://depthlume-preview.pages.dev",
+  "https://depthlume.com",
   "User"
 )
 ```
@@ -183,6 +183,6 @@ npx wrangler pages deploy dist --project-name=depthlume-preview --branch=main
 
 - Legal copy needs counsel review.
 - Translations need native-speaker review.
-- Production email requires a provider.
+- Production email depends on the configured Resend sender domain and API key remaining active.
 - Direct release upload uses a single presigned R2 `PUT`; it supports releases up to 1 GiB. An interrupted upload must be restarted. Move to presigned multipart upload only when resumability or releases above 1 GiB are required.
 - DepthLume Radar is analytics software, not a trading system or financial adviser.
