@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from './Button.astro';
 import RadarLiveVisual from './RadarLiveVisual.astro';
 import SectionHeading from './SectionHeading.astro';
+import FAQ from './FAQ.astro';
 import { featureNames, getTranslation } from '../i18n/translations';
 import { localeConfig, localizedPath, type Locale } from '../i18n/locales';
 
@@ -57,17 +58,25 @@ const c = productCopy[locale];
 
   <RadarLiveVisual {locale} />
 
-  <section class="section section--line radar-capabilities" id="radar-capabilities">
+  <section class="section section--line radar-capabilities" id="features">
     <div class="container"><SectionHeading eyebrow={t.home.sections[3][0]} title={c.capabilityTitle} description={t.home.featureDescriptions[6]} /><div class="radar-capability-grid">{selectedFeatures.map((item,index) => <article><span class="mono">0{index+1}</span><h3>{item.name}</h3><p>{item.text}</p></article>)}</div></div>
   </section>
 
-  <section class="section section--line radar-workflow">
+  <section class="section section--line radar-workflow" id="how-it-works">
     <div class="container radar-workflow__grid"><SectionHeading eyebrow={t.home.sections[5][0]} title={c.workflowTitle} /><ol>{t.home.steps.map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
   </section>
 
   <section class="section section--line radar-boundary">
     <div class="container radar-boundary__inner"><div><span class="eyebrow">Product boundary</span><h2>{c.boundaryTitle}</h2></div><p>{c.boundaryText}</p></div>
   </section>
+
+  <section class="section section--line radar-workflow" id="scenario-lab">
+    <div class="container radar-workflow__grid"><SectionHeading eyebrow="Radar research" title="From live market field to a documented research decision." description={c.description} /><ol>{t.home.steps.slice(0,3).map((step,index) => <li><span class="mono">0{index+1}</span><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol></div>
+  </section>
+
+  <section class="section section--line" id="documentation"><div class="container radar-boundary__inner"><div><span class="eyebrow">DepthLume Radar</span><h2>{c.boundaryTitle}</h2></div><p>{c.boundaryText}</p></div></section>
+
+  <section class="section section--line" id="faq"><div class="container radar-workflow__grid"><SectionHeading eyebrow="FAQ" title="DepthLume Radar beta" description={c.description} /><FAQ items={t.home.faqs.map(([q,a]) => ({q,a}))} /></div></section>
 
   <section class="section section--line radar-product-cta"><div class="container"><span class="eyebrow">DepthLume Radar · Closed beta</span><h2>{t.home.sections[7][1]}</h2><div class="portal-actions"><Button href="/register/" variant="primary">{c.primary}</Button><Button href={localizedPath(locale,'documentation')}>{t.nav[5]}</Button></div></div></section>
 </BaseLayout>
